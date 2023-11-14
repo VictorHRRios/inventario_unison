@@ -1,0 +1,1 @@
+Pagina de reportes sobre un producto en especifico.

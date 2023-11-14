@@ -9,6 +9,8 @@ def home(request):
     }
     return render(request, 'inventory/home.html', context)
 
-
 def about(request):
     return render(request, 'inventory/about.html', {'title': 'About'})
+
+def reports(request):
+    return render(request, 'inventory/reports', {'title' : 'Reports'})
