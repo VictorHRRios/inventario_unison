@@ -33,11 +33,25 @@
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{% url 'inventory-home' %}">Inicio</a>
-                    <a class="nav-item nav-link" href="{% url 'inventory-about' %}">Informacion General</a>
+                    <a class="nav-item nav-link" href="{% url 'inventory-about' %}">Info</a>
+
+                    {% if user.is_staff %}
+                        <a class="nav-item nav-link" href="#">Gestion Usuarios</a>
+                        <a class="nav-item nav-link" href="#">Gestion Inventario</a>
+                        <a class="nav-item nav-link" href="#">Reportes</a>
+                    {% endif %}
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
+                        <a class="nav-item nav-link">Modalidad:
+                            {% if user.is_staff %}
+                                Admin
+                            {% else %}
+                                Empleado
+                            {% endif %}
+                        </a>
+                        <a class="nav-item nav-link" href="#">Carro</a>
                         <a class="nav-item nav-link" href="{% url 'profile' %}">Perfil</a>
                         <a class="nav-item nav-link" href="{% url 'logout' %}">Cerrar Sesion</a>
                     {% else %}
@@ -64,14 +78,21 @@
         </div>
         <div class="col-md-4">
             <div class="content-section">
+                {% if user.is_staff %}
+                    <h3>Informacion de articulos</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-light">Articulos en Inventario:</li>
+                        <li class="list-group-item list-group-item-light">Articulos en Peligro de inexistencia:</li>
+                        <li class="list-group-item list-group-item-light">Articulos en inexistencia:</li>
+                    </ul>
+                    </p>
+                {% endif %}
                 <h3>Informacion y contacto</h3>
-                <p class='text-muted'>Informacion de contacto o alguna otra cosa
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-light">Cosa</li>
-                    <li class="list-group-item list-group-item-light">Cosa</li>
-                    <li class="list-group-item list-group-item-light">Cosa</li>
-                    <li class="list-group-item list-group-item-light">Cosa</li>
-                </ul>
+                <p class='text-muted'>Nombre de administrador
+                </p>
+                <p class='text-muted'>Numero de administrador
+                </p>
+                <p class='text-muted'>Correo de administrador
                 </p>
             </div>
         </div>
