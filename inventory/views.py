@@ -13,4 +13,4 @@ def about(request):
     return render(request, 'inventory/about.html', {'title': 'About'})
 
 def reports(request):
-    return render(request, 'inventory/reports', {'title' : 'Reports'})
+    return render(request, 'reports/reports.html', {'title' : 'Reports'})
