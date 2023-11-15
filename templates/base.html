@@ -38,6 +38,7 @@
                     {% if user.is_staff %}
                         <a class="nav-item nav-link" href="#">Gestion Usuarios</a>
                         <a class="nav-item nav-link" href="#">Gestion Inventario</a>
+                        <a class="nav-item nav-link" href="{%url 'inventory-stock_movements' %}">Movimientos</a>
                         <a class="nav-item nav-link" href="{% url 'reports-reports'%}">Reportes</a>
                     {% endif %}
                 </div>

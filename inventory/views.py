@@ -14,3 +14,6 @@ def about(request):
 
 def reports(request):
     return render(request, 'reports/reports.html', {'title' : 'Reports'})
+
+def stock_movements(request):
+    return render(request, 'inventory/stock_movements.html', {'title' : 'Stock Movements'})
