@@ -15,5 +15,18 @@ def about(request):
 def reports(request):
     return render(request, 'reports/reports.html', {'title' : 'Reports'})
 
+def reports(request):
+    return render(request, 'reports/reports.html', {'title' : 'Reports'})
+
+def reports(request):
+    return render(request, 'reports/reports.html', {'title' : 'Reports'})
+
+def budget_report(request):
+    return render(request, 'reports/budget_report.html', {'title' : 'Budget Report'})
+
+def product_report(request):
+    return render(request, 'reports/product_report.html', {'title' : 'Product Report'})
+
+
 def stock_movements(request):
     return render(request, 'inventory/stock_movements.html', {'title' : 'Stock Movements'})
