@@ -32,29 +32,57 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{% url 'inventory-home' %}">Inicio</a>
-                    <a class="nav-item nav-link" href="{% url 'inventory-about' %}">Info</a>
-
                     {% if user.is_staff %}
-                        <a class="nav-item nav-link" href="{% url 'manage_users' %}">Gestion Usuarios</a>
-                        <a class="nav-item nav-link" href="#">Gestion Inventario</a>
+                        <li class="nav-item dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                Gestion
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'manage_users' %}">Usuarios </a></li>
+                                <li><a class="dropdown-item" href="#">Inventario</a></li>
+                            </ul>
+                        </li>
                         <a class="nav-item nav-link" href="{% url 'inventory-stock_movements' %}">Movimientos</a>
-                        <a class="nav-item nav-link" href="{% url 'reports-reports' %}">Reportes</a>
+                        <li class="nav-item dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                Reportes
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Articulos </a></li>
+                                <li><a class="dropdown-item" href="#">Presupuesto</a></li>
+                            </ul>
+                        </li>
                     {% endif %}
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
                         <a class="nav-item nav-link">Modalidad:
-                            {% if user.is_staff %}
-                                Admin
-                            {% else %}
-                                Empleado
-                            {% endif %}
+
                         </a>
                         <a class="nav-item nav-link" href="{% url 'inventory-shopping_cart' %}">Carro</a>
-                        <a class="nav-item nav-link" href="{% url 'profile' %}">Perfil</a>
-                        <a class="nav-item nav-link" href="{% url 'logout' %}">Cerrar Sesion</a>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ user.username }}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item disabled">
+                                    {% if user.is_staff %}
+                                        Modalidad: Admin
+                                    {% else %}
+                                        Modalidad: Empleado
+                                    {% endif %} </a>
+                                <a class="dropdown-item" href="{% url 'profile' %}">Perfil</a>
+                                <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesion</a>
+
+                            </div>
+                        </div>
+
+
+
                     {% else %}
                         <a class="nav-item nav-link" href="{% url 'login' %}">Iniciar Sesion</a>
                     {% endif %}
@@ -67,7 +95,7 @@
 
 <main role="main" class="container">
 
-            {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 
 </main>
 
@@ -81,6 +109,9 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 </body>
 </html>

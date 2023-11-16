@@ -42,7 +42,7 @@ def update_user(request, user_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'La informacion del ususario se ha actualizado.')
-            return redirect('manage_user')
+            return redirect('manage_users')
     else:
         form = UserUpdateForm(instance=user)
     return render(request, 'users/update_user.html', {'form': form})
