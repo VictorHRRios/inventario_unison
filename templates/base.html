@@ -52,7 +52,7 @@
                                 Empleado
                             {% endif %}
                         </a>
-                        <a class="nav-item nav-link" href="#">Carro</a>
+                        <a class="nav-item nav-link" href="{% url 'inventory-shopping_cart' %}">Carro</a>
                         <a class="nav-item nav-link" href="{% url 'profile' %}">Perfil</a>
                         <a class="nav-item nav-link" href="{% url 'logout' %}">Cerrar Sesion</a>
                     {% else %}

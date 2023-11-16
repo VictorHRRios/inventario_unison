@@ -30,3 +30,6 @@ def product_report(request):
 
 def stock_movements(request):
     return render(request, 'inventory/stock_movements.html', {'title' : 'Stock Movements'})
+
+def shopping_cart(request):
+    return render(request, 'inventory/shopping_cart.html', {'title' : 'Shopping Cart'})
