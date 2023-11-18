@@ -27,6 +27,7 @@ def profile(request):
 @login_required
 def display_profile(request, user_id):
     u_form = User.objects.get(id=user_id)
+
     if request.method == 'POST':
         p_form = ProfileUpdateForm(request.POST,
                                    request.FILES,
