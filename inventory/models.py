@@ -18,7 +18,6 @@ class Report(models.Model):
     movement = models.CharField(max_length=10, choices=TYPE_MOVEMENT) #input or output
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reason = models.TextField(blank=True, null=True)
-    items = models.JSONField(default=list, blank=True) # List of two things: (Reference to the article (foreignKey) . amount)
 
     def __str__(self):
         return f"[{self.date}] {self.user.username} : {self.movement}"
@@ -51,3 +50,12 @@ class Item(models.Model):
     def __str__(self):
         return f"[{self.id}] {self.category} : {self.stock}"
 
+class Order(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+
+class ShoppingCart(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
