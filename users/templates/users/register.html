@@ -7,7 +7,11 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Registro</legend>
-                {{ form|crispy }}
+                {{ form.first_name|as_crispy_field }}
+                {{ form.last_name|as_crispy_field }}
+                {{ form.email|as_crispy_field }}
+                {{ form.password1|as_crispy_field }}
+                {{ form.password2|as_crispy_field }}
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Registrar</button>
