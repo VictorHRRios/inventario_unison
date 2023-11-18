@@ -3,6 +3,7 @@ from . import views
 from users import views as user_views
 
 urlpatterns = [
+    path('display_profile/<int:user_id>/', user_views.display_profile, name="display_profile"),
     path('delete_user/<int:user_id>/', user_views.delete_user, name="delete_user"),
     path('update_user/<int:user_id>/', user_views.update_user, name="update_user"),
     path('register/', user_views.register, name='register'),

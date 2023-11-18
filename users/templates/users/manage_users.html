@@ -32,7 +32,9 @@
         {% endfor %}
         {% for user in non_staff_users %}
             <tr>
-                <th scope="row"> {{ user.username }}</th>
+                <th scope="row">
+                    <a href="{% url 'display_profile' user.id %}">{{ user.username }}</a>
+                </th>
                 <td> Intendente</td>
                 <td> {{ user.date_joined.date }}</td>
                 <td> {{ user.last_login.date }}</td>

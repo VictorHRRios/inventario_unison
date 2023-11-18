@@ -2,12 +2,62 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, UserUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 
 @login_required
 def profile(request):
-    return render(request, 'users/profile.html')
+    if request.method == 'POST':
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=request.user.profile)
+        if p_form.is_valid():
+            p_form.save()
+            messages.success(request, f'Tu perfil se ha actualizado!')
+            return redirect('profile')
+    else:
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'p_form': p_form,
+    }
+    return render(request, 'users/profile.html', context)
+
+
+@login_required
+def display_profile(request, user_id):
+    u_form = User.objects.get(id=user_id)
+    if request.method == 'POST':
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=u_form.profile)
+        if p_form.is_valid():
+            p_form.save()
+            messages.success(request, f'El perfil se ha actualizado!')
+            return redirect('display_profile', user_id)
+    else:
+        p_form = ProfileUpdateForm(instance=u_form.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+    }
+
+    return render(request, 'users/display_profile.html', context)
+
+
+def update_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    form = UserUpdateForm(request.POST, instance=user)
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'La informacion del ususario se ha actualizado.')
+            return redirect('manage_users')
+    else:
+        form = UserUpdateForm(instance=user)
+    return render(request, 'users/update_user.html', {'form': form})
 
 
 def manage_users(request):
