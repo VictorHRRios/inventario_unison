@@ -32,6 +32,9 @@ def stock_movements(request):
 def shopping_cart(request):
     return render(request, 'inventory/shopping_cart.html', {'title': 'Shopping Cart'})
 
+def order_item(request):
+    return render(request, 'inventory/order-item.html', {'title' : 'Order Item'})
+
 
 def manage_items(request):
     items = Item.objects.all()

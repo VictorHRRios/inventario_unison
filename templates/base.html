@@ -32,6 +32,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{% url 'inventory-order-item' %}">Solicitar artículo</a>
                     {% if user.is_staff %}
                         <li class="nav-item dropdown">
                             <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"

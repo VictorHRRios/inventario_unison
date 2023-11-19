@@ -12,5 +12,6 @@ urlpatterns = [
     path('reports/product/', views.product_report, name='reports-product-report'),
     path('stock_movements/', views.stock_movements, name='inventory-stock_movements'),
     path('shopping_cart/', views.shopping_cart, name='inventory-shopping_cart'),
+    path('order-item/', views.order_item, name='inventory-order-item'),
 
 ]
