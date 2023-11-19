@@ -8,6 +8,7 @@ python manage.py makemigrations
 python manage.py migrate
 """
 
+
 class Report(models.Model):
     TYPE_MOVEMENT = [
         ('entrada', 'Entrada'),
@@ -15,13 +16,15 @@ class Report(models.Model):
     ]
 
     date = models.DateField(default=timezone.now)
-    movement = models.CharField(max_length=10, choices=TYPE_MOVEMENT) #input or output
+    movement = models.CharField(max_length=10, choices=TYPE_MOVEMENT)  # input or output
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reason = models.TextField(blank=True, null=True)
-    items = models.JSONField(default=list, blank=True) # List of two things: (Reference to the article (foreignKey) . amount)
+    items = models.JSONField(default=list,
+                             blank=True)  # List of two things: (Reference to the article (foreignKey) . amount)
 
     def __str__(self):
         return f"[{self.date}] {self.user.username} : {self.movement}"
+
 
 class Item(models.Model):
     CATEGORY_CHOICES = [
@@ -39,6 +42,7 @@ class Item(models.Model):
     ]
 
     name = models.CharField(max_length=255)
+    image = models.ImageField(default='default_item.jpg', upload_to='item_pics')
     id = models.AutoField(primary_key=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     description = models.TextField()
@@ -50,4 +54,3 @@ class Item(models.Model):
 
     def __str__(self):
         return f"[{self.id}] {self.category} : {self.stock}"
-

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Balance</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Cantidad minima</th>
+            <th scope="col">Tipo de Unidad</th>
+            <th scope="col">Costo unitario</th>
+            <th scope="col">Accion</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <th scope="row">
+                    <a href="{% url 'display_item' item.id %}">{{ item.name }}</a>
+                </th>
+
+                {% if item.stock == 0 %}
+                    <td class="table-danger">Inexistencia</td>
+                {% else %}
+                    {% if item.stock <= item.low_stock_threshold %}
+                        <td class="table-warning">Peligro de inexistencia</td>
+                    {% else %}
+                        <td class="table-success">En existencia</td>
+                    {% endif %}
+                {% endif %}
+                <td> {{ item.stock }}</td>
+                <td> {{ item.category }}</td>
+                <td> {{ item.low_stock_threshold }}</td>
+                <td> {{ item.unit_type }}</td>
+                <td> {{ item.unit_price }}</td>
+                <td>
+
+                    <div class="form-group">
+                        <div class="btn-group" role="group">
+                            <form method="get" action="#">
+                                <button class="btn btn-outline-primary" type="submit">Actualizar</button>
+                            </form>
+                            <form method="get" action="{% url 'delete_item' item.id %}">
+                                <button class="btn btn-outline-danger" onclick="return confirmDelete();" type="submit">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form method="get" action="{% url 'create_item' %}">
+        <div class="d-grid gap-2 col-10 mx-auto">
+            <div class="form-group">
+                <button class="btn btn-outline-success" type="submit">Crear Item</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function confirmDelete() {
+            return confirm("Estas seguro que quieres eliminar este item?");
+        }
+    </script>
+
+{% endblock content %}

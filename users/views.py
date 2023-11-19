@@ -47,20 +47,6 @@ def display_profile(request, user_id):
     return render(request, 'users/display_profile.html', context)
 
 
-def update_user(request, user_id):
-    user = User.objects.get(id=user_id)
-    form = UserUpdateForm(request.POST, instance=user)
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'La informacion del ususario se ha actualizado.')
-            return redirect('manage_users')
-    else:
-        form = UserUpdateForm(instance=user)
-    return render(request, 'users/update_user.html', {'form': form})
-
-
 def manage_users(request):
     if request.user.is_staff:
         staff_users = User.objects.filter(is_staff=True)
