@@ -130,3 +130,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'inventory-home'
 LOGIN_URL = 'login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'a221205528@unison.mx'
+EMAIL_HOST_PASSWORD = 'sveJWwu0g6'
+DEFAULT_FROM_EMAIL = 'a221205528@unison.mx'
+SERVER_EMAIL = 'a221205528@unison.mx'
