@@ -38,7 +38,7 @@
 
                     <div class="form-group">
                         <div class="btn-group" role="group">
-                            <form method="get" action="#">
+                            <form method="get" action="{% url 'update_item' item.id %}">
                                 <button class="btn btn-outline-primary" type="submit">Actualizar</button>
                             </form>
                             <form method="get" action="{% url 'delete_item' item.id %}">
