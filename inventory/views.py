@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Item, ShoppingCart
-from .forms import ItemCreateForm, QuantityForm
+from .models import Item, ShoppingCart, Report, Order
+from .forms import ItemCreateForm
 
 
 @login_required
@@ -12,8 +12,10 @@ def home(request):
     return render(request, 'inventory/home.html', context)
 
 
-def reports(request):
-    return render(request, 'reports/reports.html', {'title': 'Reports'})
+def reports(request, report_id):
+    orders = Order.objects.get(pk=report_id)
+    print(orders.item.name)
+    return render(request, 'inventory/reports.html', {'title': 'Reports', 'orders': orders})
 
 
 def budget_report(request):
@@ -25,7 +27,9 @@ def product_report(request):
 
 
 def stock_movements(request):
-    return render(request, 'inventory/stock_movements.html', {'title': 'Stock Movements'})
+    movements = Report.objects.all()
+    return render(request, 'inventory/stock_movements.html',
+                  {'title': 'Stock Movements', 'movements': movements})
 
 
 def shopping_cart(request):
@@ -57,6 +61,7 @@ def order_item(request):
 
 def add_to_cart(request, item_id):
     item = Item.objects.get(id=item_id)
+
     cart_item, created = ShoppingCart.objects.get_or_create(
         item=item,
         user=request.user,
@@ -123,3 +128,21 @@ def update_item(request, item_id):
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'inventory/update_item.html', {'form': form})
+
+
+def save_cart(request):
+    cart_items = ShoppingCart.objects.filter(user=request.user)
+
+    report = Report.objects.create(
+        movement='salida',
+        user=request.user,
+    )
+    for i in cart_items:
+        order = Order.objects.create(
+            item=i.item,
+            quantity=i.quantity,
+            report=report
+        )
+    report.save()
+    order.save()
+    return redirect('shopping_cart')
