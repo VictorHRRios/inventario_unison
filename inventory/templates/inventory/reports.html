@@ -14,19 +14,13 @@
         </tr>
         </thead>
         <tbody>
-        {% for movement in movements %}
             <tr>
                 <th scope="row">
-                    {{ movement.user }}
+                    {{ orders.item.name }}
                 </th>
-                <td> {{ movement.movement }}</td>
-                <td> {{ movement.date }}</td>
-                <td> {{ movement.reason }}</td>
-                <td>
-                    <a href="{% url 'reports' movement.id %}">WAWA</a>
-                </td>
+                <td> {{ orders.quantity }}</td>
+                <td> {{ orders.report }}</td>
             </tr>
-        {% endfor %}
         </tbody>
     </table>
 {% endblock content %}

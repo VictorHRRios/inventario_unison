@@ -51,7 +51,7 @@ class Item(models.Model):
     unison = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"[{self.id}] {self.category} : {self.stock}"
+        return f"[{self.name}] {self.category} : {self.stock}"
 
 
 class Order(models.Model):
@@ -59,8 +59,13 @@ class Order(models.Model):
     quantity = models.IntegerField(default=1)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"[{self.report}] {self.item.name} : {self.quantity}"
+
 
 class ShoppingCart(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.user.username}'s Shopping Cart"
