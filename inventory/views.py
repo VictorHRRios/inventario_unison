@@ -12,23 +12,23 @@ def home(request):
     return render(request, 'inventory/home.html', context)
 
 
-def reports(request, report_id):
-    orders = Order.objects.get(pk=report_id)
-    print(orders.item.name)
-    return render(request, 'inventory/reports.html', {'title': 'Reports', 'orders': orders})
+def movement_info(request, movement_id):
+    orders = Order.objects.filter(report_id=movement_id)
+    print(orders.all())
+    return render(request, 'inventory/movement_info.html', {'title': 'Movement Info', 'orders': orders})
 
 
-def budget_report(request):
-    return render(request, 'reports/budget_report.html', {'title': 'Budget Report'})
+def budget_stats(request):
+    return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats'})
 
 
-def product_report(request):
-    return render(request, 'reports/product_report.html', {'title': 'Product Report'})
+def product_stats(request):
+    return render(request, 'stats/product_stats.html', {'title': 'Product Stats'})
 
 
-def stock_movements(request):
+def movements(request):
     movements = Report.objects.all()
-    return render(request, 'inventory/stock_movements.html',
+    return render(request, 'inventory/movements.html',
                   {'title': 'Stock Movements', 'movements': movements})
 
 
@@ -37,54 +37,37 @@ def shopping_cart(request):
     return render(request, 'inventory/shopping_cart.html', {'title': 'Shopping Cart', 'cart_items': cart_items})
 
 
-def order_item(request):
+def request_item(request):
     item = Item.objects.all()
-    if request.method == 'POST':
-        # form = QuantityForm(request.POST)
-        # if form.is_valid():
-        # form = form.cleaned_data['quantity']
-        context = {
-            'title': 'Order Item',
-            'item': item,
-            # 'form': form
-        }
-        return render(request, 'inventory/order_item.html', context)
-    else:
-        # form = QuantityForm()
-        context = {
-            'title': 'Order Item',
-            'item': item,
-            # 'form': form
-        }
+    context = {
+        'title': 'Order Item',
+        'item': item,
+    }
     return render(request, 'inventory/order_item.html', context)
 
 
 def add_to_cart(request, item_id):
     item = Item.objects.get(id=item_id)
-
+    quantity = request.POST.get('quantity')
     cart_item, created = ShoppingCart.objects.get_or_create(
         item=item,
         user=request.user,
-        defaults={'quantity': 1}
+        defaults={'quantity': int(quantity)}
     )
     if not created:
-        cart_item.quantity += 1
+        cart_item.quantity += int(quantity)
         cart_item.save()
-    cart_item.item.stock -= 1
-    cart_item.item.save()
-    return redirect('order_item')
+    if cart_item.quantity > cart_item.item.stock:
+        messages.error(request, f'No hay suficientes articulos en el carrito')
+        cart_item.quantity = cart_item.item.stock
+        cart_item.save()
+    return redirect('request_item')
 
 
 def remove_item(request, item_id):
     user = request.user
     cart_item = ShoppingCart.objects.get(pk=item_id, user=user)
-    if cart_item.quantity > 1:
-        cart_item.quantity -= 1
-        cart_item.save()
-    else:
-        cart_item.delete()
-    cart_item.item.stock += 1
-    cart_item.item.save()
+    cart_item.delete()
     return redirect('shopping_cart')
 
 
@@ -143,6 +126,10 @@ def save_cart(request):
             quantity=i.quantity,
             report=report
         )
+        i.item.stock -= i.quantity
+        i.item.save()
     report.save()
     order.save()
+    cart_items.delete()
+
     return redirect('shopping_cart')

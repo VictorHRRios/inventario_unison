@@ -3,24 +3,24 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+    <h3>{{ orders.first.report }}</h3>
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Usuario</th>
-            <th scope="col">Tipo de Movimiento</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Razon</th>
-            <th scope="col">Mas info</th>
+            <th scope="col">Articulo</th>
+            <th scope="col">Cantidad</th>
         </tr>
         </thead>
         <tbody>
+        {% for order in orders %}
             <tr>
                 <th scope="row">
-                    {{ orders.item.name }}
+                    {{ order.item.name }}
                 </th>
-                <td> {{ orders.quantity }}</td>
-                <td> {{ orders.report }}</td>
+                <td> {{ order.quantity }}</td>
             </tr>
+        {% endfor %}
         </tbody>
     </table>
+    <h3>{{ orders.first.report.reason }}</h3>
 {% endblock content %}

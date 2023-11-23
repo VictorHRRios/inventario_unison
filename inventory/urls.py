@@ -10,12 +10,11 @@ urlpatterns = [
     path('remove_item/<int:item_id>/', views.remove_item, name="remove_item"),
     path('create_item/', views.create_item, name='create_item'),
     path('update_item/<int:item_id>/', views.update_item, name='update_item'),
-    path('reports/<int:report_id>/', views.reports, name='reports'),
-    path('reports/budget/', views.budget_report, name='budget_report'),
-    path('reports/product/', views.product_report, name='product-report'),
-    path('stock_movements/', views.stock_movements, name='stock_movements'),
+    path('movements/movement_info/<int:movement_id>/', views.movement_info, name='movement_info'),
+    path('stats/budget/', views.budget_stats, name='budget_stats'),
+    path('stats/product/', views.product_stats, name='product_stats'),
+    path('movements', views.movements, name='movements'),
     path('shopping_cart/', views.shopping_cart, name='shopping_cart'),
     path('save_cart/', views.save_cart, name='save_cart'),
-    path('order_item/', views.order_item, name='order_item'),
-
+    path('request_item', views.request_item, name='request_item'),
 ]

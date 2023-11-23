@@ -16,7 +16,7 @@ class Report(models.Model):
     ]
 
     date = models.DateField(default=timezone.now)
-    movement = models.CharField(max_length=10, choices=TYPE_MOVEMENT)  # input or output
+    movement = models.CharField(max_length=10, choices=TYPE_MOVEMENT)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reason = models.TextField(blank=True, null=True)
 
