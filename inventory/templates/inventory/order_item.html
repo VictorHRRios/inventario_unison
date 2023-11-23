@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 
 {% block content %}
     <!DOCTYPE html>
@@ -105,7 +107,12 @@
                                 <div class="container mt-5">
                                     <form method="post" action="{% url 'add_to_cart' items.id %}">
                                         {% csrf_token %}
-                                        {{ form }}
+                                        <select name="quantity" class="form-select form-select-sm" aria-label="Small select example">
+                                            <option selected>1</option>
+                                            <option value=2>2</option>
+                                            <option value=3>3</option>
+                                            <option value=4>4</option>
+                                        </select>
                                         <button type="submit" class="btn btn-primary">Agregar al carrito</button>
                                     </form>
                                 </div>
