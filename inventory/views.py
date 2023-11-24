@@ -115,10 +115,11 @@ def update_item(request, item_id):
 
 def save_cart(request):
     cart_items = ShoppingCart.objects.filter(user=request.user)
-
+    reason = request.POST.get('reason')
     report = Report.objects.create(
         movement='salida',
         user=request.user,
+        reason=reason
     )
     for i in cart_items:
         order = Order.objects.create(
