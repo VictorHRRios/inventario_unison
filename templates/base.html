@@ -35,7 +35,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{% url 'request_item' %}" style="color: white;">Solicitar artículo</a>
+                    <a class="nav-item nav-link" href="{% url 'request_item' %}" style="color: white;">Solicitar
+                        artículo</a>
                     {% if user.is_staff %}
                         <li class="nav-item dropdown">
                             <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
@@ -65,14 +66,16 @@
                     {% if user.is_authenticated %}
                         <div class="d-flex m-3 me-0">
                             <i class="fa fa-shopping-cart" aria-hidden="true" style="font-size:30px; color: white;"></i>
-                                <a href="{% url 'shopping_cart' %}" class="position-relative me-4 my-auto">
-                                    <i class="icon-shopping-cart"></i>
-                                    <span class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-light" style="height: 20px; min-width: 20px; position: relative; right: 5px; bottom: 8px;">3</span>
-                                </a>
+                            <a href="{% url 'shopping_cart' %}" class="position-relative me-4 my-auto">
+                                <i class="icon-shopping-cart"></i>
+                                <span class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-light"
+                                      style="height: 20px; min-width: 20px; position: relative; right: 5px; bottom: 8px;">3</span>
+                            </a>
                         </div>
                         <div class="dropdown">
                             <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative; top: 10px;">
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    style="position: relative; top: 10px;">
                                 {{ user.username }}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -98,7 +101,13 @@
 </header>
 
 <main role="main" class="container">
-
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
     {% block content %}{% endblock %}
 
 </main>

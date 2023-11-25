@@ -34,6 +34,15 @@ def movements(request):
 
 def shopping_cart(request):
     cart_items = ShoppingCart.objects.filter(user=request.user)
+    for cart_item in cart_items:
+        if cart_item.quantity > cart_item.item.stock:
+            cart_item.quantity = cart_item.item.stock
+            cart_item.save()
+            messages.warning(request, f'El stock del carrito ha sido modificado')
+        elif cart_item.quantity == 0:
+            cart_item.delete()
+            messages.warning(request, f'Un elemento del carrito ha sido eliminado por cambios en el stock')
+            return redirect('shopping_cart')
     return render(request, 'inventory/shopping_cart.html', {'title': 'Shopping Cart', 'cart_items': cart_items})
 
 
@@ -43,7 +52,7 @@ def request_item(request):
         'title': 'Order Item',
         'item': item,
     }
-    return render(request, 'inventory/order_item.html', context)
+    return render(request, 'inventory/request_item.html', context)
 
 
 def add_to_cart(request, item_id):
@@ -58,7 +67,7 @@ def add_to_cart(request, item_id):
         cart_item.quantity += int(quantity)
         cart_item.save()
     if cart_item.quantity > cart_item.item.stock:
-        messages.error(request, f'No hay suficientes articulos en el carrito')
+        messages.warning(request, f'No hay suficientes articulos en el carrito')
         cart_item.quantity = cart_item.item.stock
         cart_item.save()
     return redirect('request_item')
@@ -87,7 +96,7 @@ def create_item(request):
         form = ItemCreateForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Tu articulo ha sido agregado al carrito')
+            messages.success(request, f'Tu articulo ha sido creado')
             return redirect('manage_items')
     else:
         form = ItemCreateForm()
@@ -115,20 +124,21 @@ def update_item(request, item_id):
 
 def save_cart(request):
     cart_items = ShoppingCart.objects.filter(user=request.user)
+
     reason = request.POST.get('reason')
     report = Report.objects.create(
         movement='salida',
         user=request.user,
         reason=reason
     )
-    for i in cart_items:
+    for cart_item in cart_items:
         order = Order.objects.create(
-            item=i.item,
-            quantity=i.quantity,
+            item=cart_item.item,
+            quantity=cart_item.quantity,
             report=report
         )
-        i.item.stock -= i.quantity
-        i.item.save()
+        cart_item.item.stock -= cart_item.quantity
+        cart_item.item.save()
     report.save()
     order.save()
     cart_items.delete()
