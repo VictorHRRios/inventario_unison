@@ -4,6 +4,92 @@
 
 {% block content %}
     <div class="content-section">
-        Reportes BUDGET
+        <h2 class="report-header">REPORTES <span class="highlight">PRESUPUESTO</span></h2>
+
+        <!-- Agregar un formulario para seleccionar fechas -->
+        <form id="date-range-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+
+        <!-- Agregar un contenedor para el gráfico -->
+        <div>
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tu código de Chart.js -->
+    <script>
+        // Obtener los elementos del formulario y del gráfico
+        const dateRangeForm = document.getElementById('date-range-form');
+        const myChartCanvas = document.getElementById('myChart');
+        const myChartContext = myChartCanvas.getContext('2d');
+
+        // Función para generar el gráfico con fechas dinámicas
+        function generateChart() {
+            // Obtener las fechas seleccionadas del formulario
+            const startDate = document.getElementById('id_start_date').value;
+            const endDate = document.getElementById('id_end_date').value;
+
+            // Simular la obtención de datos dinámicos para las fechas
+            // En tu aplicación real, podrías hacer una solicitud al servidor para obtener datos según las fechas seleccionadas
+            const dynamicData = getDynamicData(startDate, endDate);
+
+            // Grafico
+            new Chart(myChartContext, {
+                type: "line",
+                data: {
+                    labels: dynamicData.dates,
+                    datasets: [
+                        {
+                            label: 'Dinero ingresado en materiales',
+                            backgroundColor: "rgba(0,0,255,1.0)",
+                            borderColor: "rgba(0,0,255,0.5)",
+                            data: dynamicData.entrys
+                        },
+                        {
+                            label: 'Dinero gastado en materiales',
+                            backgroundColor: "rgba(255,0,0,1.0)",
+                            borderColor: "rgba(255,0,0,0.5)",
+                            data: dynamicData.outlays
+                        }
+                    ]
+                },
+                options: {
+                    // Puedes agregar opciones adicionales aquí
+                }
+            });
+        }
+
+        // Función para simular datos dinámicos (reemplázala con la lógica de tu aplicación real)
+        function getDynamicData(startDate, endDate) {
+            // Aquí deberías realizar una solicitud al servidor para obtener datos según las fechas seleccionadas
+            // En este ejemplo, simplemente genero datos aleatorios para ilustrar el concepto
+
+            const dates = [];
+            const entrys = [];
+            const outlays = [];
+
+            // Lógica para generar fechas y valores aleatorios (reemplaza con tu lógica real)
+            for (let i = 0; i < 10; i++) {
+                dates.push(`Fecha ${i}`);
+                entrys.push(Math.floor(Math.random() * 100) + 50);
+                outlays.push(Math.floor(Math.random() * 100) + 50);
+            }
+
+            return {
+                dates: dates,
+                entrys: entrys,
+                outlays: outlays
+            };
+        }
+
+        // Agregar un escucha al formulario para actualizar el gráfico cuando cambian las fechas
+        dateRangeForm.addEventListener('change', generateChart);
+
+        // Generar el gráfico inicial al cargar la página
+        generateChart();
+    </script>
 {% endblock content %}
