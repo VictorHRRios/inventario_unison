@@ -57,7 +57,7 @@ def product_stats(request):
 
 
 def movements(request):
-    movements = Report.objects.all()
+    movements = Report.objects.all().order_by('-date')
     return render(request, 'inventory/movements.html',
                   {'title': 'Stock Movements', 'movements': movements})
 
@@ -178,7 +178,7 @@ def save_cart(request):
 def add_stock(request):
     item = Item.objects.all()
     temp_user, created = User.objects.get_or_create(
-        username="",
+        username="ADMIN",
         is_staff=True
     )
     cart_items = ShoppingCart.objects.filter(user=temp_user.id)
@@ -193,7 +193,7 @@ def add_stock(request):
 def add_to_stock(request, item_id):
     item = Item.objects.get(id=item_id)
     quantity = request.POST.get('quantity')
-    temp_user = User.objects.get(username="")
+    temp_user = User.objects.get(username="ADMIN")
     cart_item, created = ShoppingCart.objects.get_or_create(
         item=item,
         user=temp_user,
@@ -206,7 +206,7 @@ def add_to_stock(request, item_id):
 
 
 def save_input(request):
-    temp_user = User.objects.get(username="")
+    temp_user = User.objects.get(username="ADMIN")
     cart_items = ShoppingCart.objects.filter(user=temp_user.id)
     reason = request.POST.get('reason')
     report = Report.objects.create(
@@ -228,7 +228,7 @@ def save_input(request):
 
 
 def remove_item_stock(request, item_id):
-    temp_user = User.objects.get(username="")
+    temp_user = User.objects.get(username="ADMIN")
     cart_item = ShoppingCart.objects.get(pk=item_id, user=temp_user)
     cart_item.delete()
     return redirect('add_stock')
