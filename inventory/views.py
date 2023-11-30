@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Item, ShoppingCart, Report, Order
 from .forms import ItemCreateForm, DateRangeForm
-
+import json
 
 @login_required
 def home(request):
@@ -20,11 +20,38 @@ def movement_info(request, movement_id):
 
 def budget_stats(request):
     form = DateRangeForm()
+    outlays = []
+    entrys = []
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
+    
+    outlays_movements = Report.objects.filter(movement='salida')
+    entrys_movements = Report.objects.filter(movement='entrada')
+    
+    for mov in outlays_movements:
+        cash = 0
+        for order in Order.objects.filter(report_id=mov):
+            unit_price = order.item.unit_price
+            quantity = order.quantity
+            cash = cash + (unit_price*quantity)
+        outlays.append([str(mov.date), float(cash)])
 
-    return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats', 'form' : form})
+    for mov in entrys_movements:
+        cash = 0
+        for order in Order.objects.filter(report_id=mov):
+            unit_price = order.item.unit_price
+            quantity = order.quantity
+            cash = cash + (unit_price*quantity)
+        entrys.append([str(mov.date.year), float(cash)])
+
+    movements = {
+        'outlays' : json.dumps(outlays),
+        'entrys' : json.dumps(entrys)
+    }
+
+    #movements['outlays_mov'] = json.dumps(movements['outlays'])
+    return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats', 'form' : form, 'movements' : movements})
 
 
 def product_stats(request):

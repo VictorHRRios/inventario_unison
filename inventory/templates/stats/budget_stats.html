@@ -3,126 +3,175 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="content-section">
-        <h2 class="report-header">REPORTES <span class="highlight">PRESUPUESTO</span></h2>
+<div class="content-section">
+    <h2 class="report-header">REPORTES <span class="highlight">PRESUPUESTO</span></h2>
 
-        <!-- Agregar un formulario para seleccionar fechas -->
-        <form id="date-range-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-        </form>
+    <form id="date-range-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+    </form>
 
-        <!-- Agregar un contenedor para el gráfico -->
-        <div>
-            <canvas id="myChart" width="400" height="200"></canvas>
-        </div>
+    <!-- Contenedor para el gráfico -->
+    <div>
+        <canvas id="myChart" width="400" height="200"></canvas>
     </div>
+    <div id="resultado"></div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Tu código de Chart.js -->
-    <script>
-        // Obtener los elementos del formulario y del gráfico
-        const dateRangeForm = document.getElementById('date-range-form');
-        const myChartCanvas = document.getElementById('myChart');
-        const myChartContext = myChartCanvas.getContext('2d');
+<!-- Tu código de Chart.js -->
+<script>
+    // Obtener elementos del formulario y del gráfico
+    const date_range_form = document.getElementById('date-range-form');
+    const my_chart_canvas = document.getElementById('myChart');
+    const my_chart_context = my_chart_canvas.getContext('2d');
 
-        // Función para generar el gráfico con fechas dinámicas
-        function generateChart() {
-            // Obtener las fechas seleccionadas del formulario
-            const startDate = document.getElementById('id_start_date').value;
-            const endDate = document.getElementById('id_end_date').value;
+    let myChart; // Variable auxiliar para actualizar el canvas
 
-            // Simular la obtención de datos dinámicos para las fechas
-            const dynamicDate = getDatesBetween(startDate, endDate);
+    // Función para generar el gráfico con fechas dinámicas
+    function generateChart() {
+        if (myChart) {
+            myChart.destroy();
+        }
+        // Crear un nuevo canvas para evitar el error
+        const new_canvas = document.createElement('canvas');
+        new_canvas.id = 'myChart';
+        if (my_chart_canvas.parentNode != null) {
+            my_chart_canvas.parentNode.replaceChild(new_canvas, my_chart_canvas);
+        }
 
-            // Grafico
-            new Chart(myChartContext, {
-                type: "line",
-                data: {
-                    labels: dynamicDate,
-                    datasets: [
-                        {
-                            label: 'Dinero ingresado en materiales',
-                            backgroundColor: "rgba(0,0,255,1.0)",
-                            borderColor: "rgba(0,0,255,0.5)",
-                            data: dynamicData.entrys
-                        },
-                        {
-                            label: 'Dinero gastado en materiales',
-                            backgroundColor: "rgba(255,0,0,1.0)",
-                            borderColor: "rgba(255,0,0,0.5)",
-                            data: dynamicData.outlays
-                        }
-                    ]
-                },
-                options: {
-                    // Puedes agregar opciones adicionales aquí
+        // Obtener el contexto del nuevo canvas
+        const updated_chart_canvas = document.getElementById('myChart');
+        const updated_chart_context = updated_chart_canvas.getContext('2d');
+
+        // Obtener las fechas seleccionadas del formulario
+        const start_date = document.getElementById('id_start_date').value;
+        const end_date = document.getElementById('id_end_date').value;
+
+        // Simular la obtención de datos dinámicos para las fechas
+        const dynamic_date = getDatesBetween(start_date, end_date);
+        const dynamic_entrys = getEntrysBetween(dynamic_date);
+        const dynamic_outlays = getOutlaysBetween(dynamic_date);
+
+
+        // Grafico
+        myChart = new Chart(updated_chart_context, {
+            type: "line",
+            data: {
+                labels: dynamic_date,
+                datasets: [
+                    {
+                        label: 'Dinero ingresado en materiales',
+                        backgroundColor: "rgba(0,0,255,1.0)",
+                        borderColor: "rgba(0,0,255,0.5)",
+                        data: dynamic_entrys
+                    },
+                    {
+                        label: 'Dinero gastado en materiales',
+                        backgroundColor: "rgba(255,0,0,1.0)",
+                        borderColor: "rgba(255,0,0,0.5)",
+                        data: dynamic_outlays
+                    }
+                ]
+            },
+            options: {
+                // Puedes agregar opciones adicionales aquí
+            }
+        });
+    }
+
+    function getDatesBetween(start_date, end_date) {
+        const dates = []
+        //console.log(start_date.getDate)
+
+        var s_date = new Date(start_date);
+        s_date.setDate(s_date.getDate() + 1); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
+
+        var e_date = new Date(end_date);
+        e_date.setDate(e_date.getDate() + 2); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
+
+        while (s_date <= e_date) {
+            var day = s_date.getDate();
+            var month = s_date.getMonth() + 1;
+            var year = s_date.getYear() + 1900;
+            s_date.setDate(s_date.getDate() + 1);
+            dates.push([day, month, year]);
+        }
+
+        return dates;
+    }
+
+    function getEntrysBetween(dates) {
+        var entrys_list = JSON.parse('{{ movements.entrys|safe|escapejs }}');
+        data = []
+        for (var entry of entrys_list) {
+            var entr_date = (entr[0]).split("-")
+            var day = parseInt(entr_date[2]);
+            var month = parseInt(entr_date[1]);
+            var year = parseInt(entry_date[0]);
+            entry[0] = [day, month, year]
+        }
+
+        let aux;
+        let sum;
+        for (var date of dates) {
+            aux = false;
+            for (var entry of entrys_list) {
+                sum = 0;
+                if (JSON.stringify(date) == JSON.stringify(entry[0])) {
+                    sum = sum + outlay[1];
+                    aux = true;
                 }
-            });
-        }
-
-        // Función para simular datos dinámicos (reemplázala con la lógica de tu aplicación real)
-        function getDynamicData(startDate, endDate) {
-            // Aquí deberías realizar una solicitud al servidor para obtener datos según las fechas seleccionadas
-            // En este ejemplo, simplemente genero datos aleatorios para ilustrar el concepto
-
-            const entrys = [];
-            const outlays = [];
-
-            // Lógica para generar fechas y valores aleatorios (reemplaza con tu lógica real)
-            for (let i = 0; i < 10; i++) {
-                dates.push(`Fecha ${i}`);
-                entrys.push(Math.floor(Math.random() * 100) + 50);
-                outlays.push(Math.floor(Math.random() * 100) + 50);
             }
-
-            return {
-                dates: dates,
-                entrys: entrys,
-                outlays: outlays
-            };
-        }
-
-        function getDatesBetween(startDate, endDate) {
-            const dates = []
-            //console.log(startDate.getDate)
-
-            var sDate = new Date(startDate);
-            var eDate = new Date(endDate);
-            console.log(sDate.getDate() + 1)
-            console.log(sDate.getMonth() + 1)
-            console.log(sDate.getYear() + 1900)
-            
-            // Las fechas en JS inician en 0.
-            var sDay = sDate.getDate();
-            var sMonth = sDate.getMonth();
-            var sYear = sDate.getYear();
-            //var eDay = eDate.getDate();
-            //var eMonth = eDate.getMonth();
-            //var eYear = eDate.getYear();
-            
-            const currentDate = new Date(startDate[2], startDate[1] - 1, startDate[0]);
-            const endDateObj = new Date(endDate[2], endDate[1] - 1, endDate[0]);
-            console.log(currentDate[0])
-            console.log(endDateObj[0])
-            
-            while (sDate <= eDate) {
-                var sDay = sDate.getDate();
-                var sMonth = sDate.getMonth() + 1;
-                var sYear = sDate.getYear();
-                dates.push([day, month, year]);
-                sDate.setDate(sDate.getDate() + 1);
-                console.log([day, month, year])
+            if (aux) {
+                data.push(sum);
             }
-            console.log(dates)
-            return dates;
+            else {
+                data.push(0)
+            }
         }
 
-        // Agregar un escucha al formulario para actualizar el gráfico cuando cambian las fechas
-        dateRangeForm.addEventListener('change', generateChart);
+        return data;
+    }
 
-        // Generar el gráfico inicial al cargar la página
-        generateChart();
-    </script>
+    function getOutlaysBetween(dates) {
+        var outlays_list = JSON.parse('{{ movements.outlays|safe|escapejs }}');
+        data = []
+        for (var outlay of outlays_list) {
+            var outlay_date = (outlay[0]).split("-")
+            var day = parseInt(outlay_date[2]);
+            var month = parseInt(outlay_date[1]);
+            var year = parseInt(outlay_date[0]);
+            outlay[0] = [day, month, year]
+            //console.log(outlay)
+        }
+
+        let aux;
+        let sum;
+        for (var date of dates) {
+            aux = false;
+            sum = 0;
+            for (var outlay of outlays_list) {
+                if (JSON.stringify(date) == JSON.stringify(outlay[0])) {
+                    sum = sum + outlay[1];
+                    aux = true;
+                }
+            }
+            if (aux) {
+                data.push(sum);
+            }
+            else {
+                data.push(0)
+            }
+        }
+        return data;
+    }
+
+    // Agregar un escucha al formulario para actualizar el gráfico cuando cambian las fechas
+    date_range_form.addEventListener('change', generateChart);
+
+    // Generar el gráfico inicial al cargar la página
+    generateChart();
+</script>
 {% endblock content %}
