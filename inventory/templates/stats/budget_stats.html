@@ -34,14 +34,13 @@
             const endDate = document.getElementById('id_end_date').value;
 
             // Simular la obtención de datos dinámicos para las fechas
-            // En tu aplicación real, podrías hacer una solicitud al servidor para obtener datos según las fechas seleccionadas
-            const dynamicData = getDynamicData(startDate, endDate);
+            const dynamicDate = getDatesBetween(startDate, endDate);
 
             // Grafico
             new Chart(myChartContext, {
                 type: "line",
                 data: {
-                    labels: dynamicData.dates,
+                    labels: dynamicDate,
                     datasets: [
                         {
                             label: 'Dinero ingresado en materiales',
@@ -68,7 +67,6 @@
             // Aquí deberías realizar una solicitud al servidor para obtener datos según las fechas seleccionadas
             // En este ejemplo, simplemente genero datos aleatorios para ilustrar el concepto
 
-            const dates = [];
             const entrys = [];
             const outlays = [];
 
@@ -84,6 +82,41 @@
                 entrys: entrys,
                 outlays: outlays
             };
+        }
+
+        function getDatesBetween(startDate, endDate) {
+            const dates = []
+            //console.log(startDate.getDate)
+
+            var sDate = new Date(startDate);
+            var eDate = new Date(endDate);
+            console.log(sDate.getDate() + 1)
+            console.log(sDate.getMonth() + 1)
+            console.log(sDate.getYear() + 1900)
+            
+            // Las fechas en JS inician en 0.
+            var sDay = sDate.getDate();
+            var sMonth = sDate.getMonth();
+            var sYear = sDate.getYear();
+            //var eDay = eDate.getDate();
+            //var eMonth = eDate.getMonth();
+            //var eYear = eDate.getYear();
+            
+            const currentDate = new Date(startDate[2], startDate[1] - 1, startDate[0]);
+            const endDateObj = new Date(endDate[2], endDate[1] - 1, endDate[0]);
+            console.log(currentDate[0])
+            console.log(endDateObj[0])
+            
+            while (sDate <= eDate) {
+                var sDay = sDate.getDate();
+                var sMonth = sDate.getMonth() + 1;
+                var sYear = sDate.getYear();
+                dates.push([day, month, year]);
+                sDate.setDate(sDate.getDate() + 1);
+                console.log([day, month, year])
+            }
+            console.log(dates)
+            return dates;
         }
 
         // Agregar un escucha al formulario para actualizar el gráfico cuando cambian las fechas

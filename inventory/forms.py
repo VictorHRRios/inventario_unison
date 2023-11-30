@@ -13,5 +13,5 @@ class TextForm(forms.Form):
                              label='Especifíca porqué necesitas estos objetos.')
 
 class DateRangeForm(forms.Form):
-    start_date = forms.DateField(label='Fecha de inicio')
-    end_date = forms.DateField(label='Fecha final')
+    start_date = forms.DateField(label='Fecha de inicio', widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(label='Fecha final', widget=forms.DateInput(attrs={'type': 'date'}))
