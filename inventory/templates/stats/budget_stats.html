@@ -83,7 +83,6 @@
 
     function getDatesBetween(start_date, end_date) {
         const dates = []
-        //console.log(start_date.getDate)
 
         var s_date = new Date(start_date);
         s_date.setDate(s_date.getDate() + 1); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
@@ -99,6 +98,8 @@
             dates.push([day, month, year]);
         }
 
+        console.log(dates);
+
         return dates;
     }
 
@@ -106,9 +107,9 @@
         var entrys_list = JSON.parse('{{ movements.entrys|safe|escapejs }}');
         data = []
         for (var entry of entrys_list) {
-            var entr_date = (entr[0]).split("-")
-            var day = parseInt(entr_date[2]);
-            var month = parseInt(entr_date[1]);
+            var entry_date = (entry[0]).split("-")
+            var day = parseInt(entry_date[2]);
+            var month = parseInt(entry_date[1]);
             var year = parseInt(entry_date[0]);
             entry[0] = [day, month, year]
         }
@@ -144,7 +145,6 @@
             var month = parseInt(outlay_date[1]);
             var year = parseInt(outlay_date[0]);
             outlay[0] = [day, month, year]
-            //console.log(outlay)
         }
 
         let aux;
