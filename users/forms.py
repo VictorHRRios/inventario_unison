@@ -26,6 +26,14 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].label = 'Nombres'
+        self.fields['last_name'].label = 'Apellidos'
+        self.fields['email'].label = 'Correo Electronico'
+        self.fields['password1'].label = 'Contraseña'
+        self.fields['password2'].label = 'Confirmacion de Contraseña'
+
 
 class UserUpdateForm(UserChangeForm):
     email = forms.EmailField()
@@ -36,8 +44,20 @@ class UserUpdateForm(UserChangeForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].label = 'Nombres'
+        self.fields['last_name'].label = 'Apellidos'
+        self.fields['email'].label = 'Correo Electronico'
+
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image', 'phone', 'role']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].label = 'Imagen'
+        self.fields['phone'].label = 'Numero de Celular'
+        self.fields['role'].label = 'Rol'
