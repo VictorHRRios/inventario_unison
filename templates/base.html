@@ -64,14 +64,11 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <div class="d-flex m-3 me-0">
+                    <div class="d-flex m-3 me-0">
+                        <a href="{% url 'shopping_cart' %}" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-cart" aria-hidden="true" style="font-size:30px; color: white;"></i>
-                            <a href="{% url 'shopping_cart' %}" class="position-relative me-4 my-auto">
-                                <i class="icon-shopping-cart"></i>
-                                <span class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-light"
-                                      style="height: 20px; min-width: 20px; position: relative; right: 5px; bottom: 8px;">3</span>
-                            </a>
-                        </div>
+                        </a>
+                    </div>
                         <div class="dropdown">
                             <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
