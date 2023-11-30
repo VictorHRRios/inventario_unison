@@ -119,50 +119,56 @@
             </div>
         </div>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Objeto</th>
-            <th>Cantidad</th>
-            <th>Eliminar</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        {% for item in cart_items %}
-            <tr>
-                <div class="ml-3 d-inline-block align-middle">
-                    <td class="border-0 align-middle"><strong>{{ item.item.name }}</strong></td>
-                </div>
-                <td class="border-0 align-middle"><strong>{{ item.quantity }}</strong></td>
-                <td class="align-middle">
-                    <div class="form-group">
-                        <div class="btn">
-                            <form method="get" action="{% url 'remove_item' item.id %}">
-                                <button class="btn btn-outline-danger"
-                                        onclick="return confirmDelete();" type="submit">
-                                    Eliminar
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
     <div class="col-md-4">
-        <h4 style="margin-top: 2cm; margin-bottom: 50px;">Justificación</h4>
         <table class="table">
-            <form method="post" action="{% url 'save_input' %}">
-                {% csrf_token %}
-                <div class="mb-3">
+            {% if cart_items.count == 0 %}
+                <h style="color: red; position: relative; top: -10px; font-weight: 1000;">No hay objetos que añadir</h>
+                <button type="submit" class="btn btn-success btn-block mb-2 disabled">Confirmar Compra</button>
+            {% else %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Objeto</th>
+                        <th>Cantidad</th>
+                        <th>Eliminar</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <br>
+                    {% for item in cart_items %}
+                        <tr>
+                            <div class="ml-3 d-inline-block align-middle">
+                                <td class="border-0 align-middle"><strong>{{ item.item.name }}</strong></td>
+                            </div>
+                            <td class="border-0 align-middle"><strong>{{ item.quantity }}</strong></td>
+                            <td class="border-0 align-middle">
+                                <div class="form-group">
+                                    <div class="btn">
+                                        <form method="get" action="{% url 'remove_item_stock' item.id %}">
+                                            <button class="btn btn-outline-danger"
+                                                    onclick="return confirmDelete();" type="submit">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <form method="post" action="{% url 'save_input' %}">
+                    {% csrf_token %}
+                            <h4 style="margin-top: 2cm; margin-bottom: 50px;">Justificación</h4>
+                    <div class="mb-3">
                                         <textarea name="reason" class="form-control" id="exampleFormControlTextarea1"
                                                   rows="3"
                                                   placeholder="Especifica por que necesitas estos objetos."></textarea>
-                </div>
-                <button type="submit" class="btn btn-success btn-block mb-2">Confirmar Transaccion</button>
-            </form>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block mb-2">Confirmar Transaccion</button>
+                </form>
+            {% endif %}
+
         </table>
     </div>
     </body>

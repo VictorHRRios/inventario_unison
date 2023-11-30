@@ -163,7 +163,7 @@ def save_cart(request):
         reason=reason
     )
     for cart_item in cart_items:
-        order = Order.objects.create(
+        Order.objects.create(
             item=cart_item.item,
             quantity=cart_item.quantity,
             report=report
@@ -171,7 +171,6 @@ def save_cart(request):
         cart_item.item.stock -= cart_item.quantity
         cart_item.item.save()
     report.save()
-    order.save()
     cart_items.delete()
 
     return redirect('shopping_cart')
@@ -195,7 +194,6 @@ def add_stock(request):
 def add_to_stock(request, item_id):
     item = Item.objects.get(id=item_id)
     quantity = request.POST.get('quantity')
-    username = "ADMIN"
     temp_user = User.objects.get(username="")
     cart_item, created = ShoppingCart.objects.get_or_create(
         item=item,
@@ -205,7 +203,6 @@ def add_to_stock(request, item_id):
     if not created:
         cart_item.quantity += int(quantity)
         cart_item.save()
-        print(cart_item.quantity)
     return redirect('add_stock')
 
 
@@ -219,7 +216,7 @@ def save_input(request):
         reason=reason
     )
     for cart_item in cart_items:
-        order = Order.objects.create(
+        Order.objects.create(
             item=cart_item.item,
             quantity=cart_item.quantity,
             report=report
@@ -227,6 +224,12 @@ def save_input(request):
         cart_item.item.stock += cart_item.quantity
         cart_item.item.save()
     report.save()
-    order.save()
     cart_items.delete()
     return redirect('manage_items')
+
+
+def remove_item_stock(request, item_id):
+    temp_user = User.objects.get(username="")
+    cart_item = ShoppingCart.objects.get(pk=item_id, user=temp_user)
+    cart_item.delete()
+    return redirect('add_stock')
