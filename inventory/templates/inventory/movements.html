@@ -16,7 +16,7 @@
         {% for movement in movements %}
             <tr>
                 <th scope="row">
-                    {{ movement.user }}
+                    <a href="{% url 'display_profile' movement.user.id %}">{{ movement.user.username }}</a>
                 </th>
                 <td> {{ movement.movement }}</td>
                 <td> {{ movement.date }}</td>

@@ -41,9 +41,7 @@
                                         </th>
                                         <td class="border-0 align-middle"><strong>{{ item.item.description }}</strong>
                                         </td>
-                                        <button class="btn btn-sm btn-secondary">-</button>
                                         <td class="border-0 align-middle"><strong>{{ item.quantity }}</strong></td>
-                                        <button class="btn btn-sm btn-primary">+</button>
                                         <td class="align-middle">
                                             <div class="form-group">
                                                 <div class="btn">
@@ -65,8 +63,6 @@
 
                             <div class="col-md-4">
                                 <h4 style="margin-top: 2cm; margin-bottom: 50px;">Justificación</h4>
-                                <textarea class="form-control mb-3"></textarea>
-                                
                                 <table class="table">
                                     {% if cart_items.count == 0 %}
                                         <h style="color: red; position: relative; top: -10px; font-weight: 1000;">Carro vacío</h>

@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Item, ShoppingCart, Report, Order
-from .forms import ItemCreateForm, DateRangeForm
+from .models import Item, ShoppingCart, Report, Order, User
+from .forms import ItemCreateForm, ItemAddForm, DateRangeForm
 import json
+
 
 @login_required
 def home(request):
