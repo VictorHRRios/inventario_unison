@@ -20,39 +20,7 @@ def movement_info(request, movement_id):
 
 
 def budget_stats(request):
-    form = DateRangeForm()
-    outlays = []
-    entrys = []
-    if form.is_valid():
-        start_date = form.cleaned_data['start_date']
-        end_date = form.cleaned_data['end_date']
-    
-    outlays_movements = Report.objects.filter(movement='salida')
-    entrys_movements = Report.objects.filter(movement='entrada')
-    
-    for mov in outlays_movements:
-        cash = 0
-        for order in Order.objects.filter(report_id=mov):
-            unit_price = order.item.unit_price
-            quantity = order.quantity
-            cash = cash + (unit_price*quantity)
-        outlays.append([str(mov.date), float(cash)])
-
-    for mov in entrys_movements:
-        cash = 0
-        for order in Order.objects.filter(report_id=mov):
-            unit_price = order.item.unit_price
-            quantity = order.quantity
-            cash = cash + (unit_price*quantity)
-        entrys.append([str(mov.date.year), float(cash)])
-
-    movements = {
-        'outlays' : json.dumps(outlays),
-        'entrys' : json.dumps(entrys)
-    }
-
-    #movements['outlays_mov'] = json.dumps(movements['outlays'])
-    return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats', 'form' : form, 'movements' : movements})
+    return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats'})
 
 
 def product_stats(request):
@@ -177,3 +145,57 @@ def save_cart(request):
     cart_items.delete()
 
     return redirect('shopping_cart')
+
+
+def add_stock(request):
+    item = Item.objects.all()
+    temp_user = User.objects.get(username="ADMIN")
+    cart_items = ShoppingCart.objects.filter(user=temp_user.id)
+    context = {
+        'title': 'Order Item',
+        'item': item,
+        'cart_items': cart_items
+    }
+    return render(request, 'inventory/add_stock.html', context)
+
+
+def add_to_stock(request, item_id):
+    item = Item.objects.get(id=item_id)
+    quantity = request.POST.get('quantity')
+    username = "ADMIN"
+    temp_user, created = User.objects.get_or_create(
+        username=username,
+    )
+    cart_item, created = ShoppingCart.objects.get_or_create(
+        item=item,
+        user=temp_user,
+        defaults={'quantity': int(quantity)}
+    )
+    if not created:
+        cart_item.quantity += int(quantity)
+        cart_item.save()
+        print(cart_item.quantity)
+    return redirect('add_stock')
+
+
+def save_input(request):
+    temp_user = User.objects.get(username="ADMIN")
+    cart_items = ShoppingCart.objects.filter(user=temp_user.id)
+    reason = request.POST.get('reason')
+    report = Report.objects.create(
+        movement='entrada',
+        user=temp_user,
+        reason=reason
+    )
+    for cart_item in cart_items:
+        order = Order.objects.create(
+            item=cart_item.item,
+            quantity=cart_item.quantity,
+            report=report
+        )
+        cart_item.item.stock += cart_item.quantity
+        cart_item.item.save()
+    report.save()
+    order.save()
+    cart_items.delete()
+    return redirect('manage_items')
