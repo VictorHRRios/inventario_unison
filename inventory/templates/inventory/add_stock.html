@@ -103,6 +103,12 @@
                                         <option value=2>2</option>
                                         <option value=3>3</option>
                                         <option value=4>4</option>
+                                        <option value=5>5</option>
+                                        <option value=6>6</option>
+                                        <option value=7>7</option>
+                                        <option value=8>8</option>
+                                        <option value=9>9</option>
+                                        <option value=10>10</option>
                                     </select>
                                     <button type="submit" class="btn btn-primary">Agregar stock</button>
                                 </form>
@@ -116,6 +122,7 @@
     <div class="col-md-4">
         <table class="table">
             {% if cart_items.count == 0 %}
+                <br>
                 <h style="color: red; position: relative; top: -10px; font-weight: 1000;">No hay objetos que añadir</h>
                 <button type="submit" class="btn btn-success btn-block mb-2 disabled">Confirmar Compra</button>
             {% else %}

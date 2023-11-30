@@ -98,8 +98,6 @@
             dates.push([day, month, year]);
         }
 
-        console.log(dates);
-
         return dates;
     }
 
@@ -118,10 +116,10 @@
         let sum;
         for (var date of dates) {
             aux = false;
+            sum = 0;
             for (var entry of entrys_list) {
-                sum = 0;
                 if (JSON.stringify(date) == JSON.stringify(entry[0])) {
-                    sum = sum + outlay[1];
+                    sum = sum + entry[1];
                     aux = true;
                 }
             }
@@ -132,7 +130,7 @@
                 data.push(0)
             }
         }
-
+        
         return data;
     }
 
@@ -165,6 +163,7 @@
                 data.push(0)
             }
         }
+
         return data;
     }
 

@@ -15,7 +15,6 @@ def home(request):
 
 def movement_info(request, movement_id):
     orders = Order.objects.filter(report_id=movement_id)
-    print(orders.all())
     return render(request, 'inventory/movement_info.html', {'title': 'Movement Info', 'orders': orders})
 
 
@@ -44,7 +43,7 @@ def budget_stats(request):
             unit_price = order.item.unit_price
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
-        entrys.append([str(mov.date.year), float(cash)])
+        entrys.append([str(mov.date), float(cash)])
 
     movements = {
         'outlays': json.dumps(outlays),
