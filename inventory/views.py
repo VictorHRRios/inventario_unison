@@ -20,7 +20,37 @@ def movement_info(request, movement_id):
 
 
 def budget_stats(request):
-    return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats'})
+    form = DateRangeForm()
+    outlays = []
+    entrys = []
+    if form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+
+    outlays_movements = Report.objects.filter(movement='salida')
+    entrys_movements = Report.objects.filter(movement='entrada')
+
+    for mov in outlays_movements:
+        cash = 0
+        for order in Order.objects.filter(report_id=mov):
+            unit_price = order.item.unit_price
+            quantity = order.quantity
+            cash = cash + (unit_price * quantity)
+        outlays.append([str(mov.date), float(cash)])
+
+    for mov in entrys_movements:
+        cash = 0
+        for order in Order.objects.filter(report_id=mov):
+            unit_price = order.item.unit_price
+            quantity = order.quantity
+            cash = cash + (unit_price * quantity)
+        entrys.append([str(mov.date.year), float(cash)])
+
+    movements = {
+        'outlays': json.dumps(outlays),
+        'entrys': json.dumps(entrys)
+    }
+    return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats', 'form': form, 'movements': movements})
 
 
 def product_stats(request):
@@ -150,7 +180,8 @@ def save_cart(request):
 def add_stock(request):
     item = Item.objects.all()
     temp_user, created = User.objects.get_or_create(
-        username="ADMIN",
+        username="",
+        is_staff=True
     )
     cart_items = ShoppingCart.objects.filter(user=temp_user.id)
     context = {
@@ -165,7 +196,7 @@ def add_to_stock(request, item_id):
     item = Item.objects.get(id=item_id)
     quantity = request.POST.get('quantity')
     username = "ADMIN"
-    temp_user = User.objects.get(username="ADMIN")
+    temp_user = User.objects.get(username="")
     cart_item, created = ShoppingCart.objects.get_or_create(
         item=item,
         user=temp_user,
@@ -179,7 +210,7 @@ def add_to_stock(request, item_id):
 
 
 def save_input(request):
-    temp_user = User.objects.get(username="ADMIN")
+    temp_user = User.objects.get(username="")
     cart_items = ShoppingCart.objects.filter(user=temp_user.id)
     reason = request.POST.get('reason')
     report = Report.objects.create(

@@ -100,26 +100,19 @@
                             <br>
                             <a class="stock">Disponibilidad: {{ items.stock }}</a>
                             <br>
-                            {% if items.stock == 0 %}
-                                <div class="container mt-5">
-                                    <button type="submit" class="btn btn-primary" disabled>Agregar al carrito</button>
-                                </div>
-                            {% else %}
-                                <div class="container mt-5">
-                                    <form method="post" action="{% url 'add_to_stock' items.id %}">
-                                        {% csrf_token %}
-                                        <select name="quantity" class="form-select form-select-sm"
-                                                aria-label="Small select example">
-                                            <option selected>1</option>
-                                            <option value=2>2</option>
-                                            <option value=3>3</option>
-                                            <option value=4>4</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary">Agregar stock</button>
-                                    </form>
-                                </div>
-                            {% endif %}
-
+                            <div class="container mt-5">
+                                <form method="post" action="{% url 'add_to_stock' items.id %}">
+                                    {% csrf_token %}
+                                    <select name="quantity" class="form-select form-select-sm"
+                                            aria-label="Small select example">
+                                        <option selected>1</option>
+                                        <option value=2>2</option>
+                                        <option value=3>3</option>
+                                        <option value=4>4</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">Agregar stock</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
@@ -138,9 +131,9 @@
 
         {% for item in cart_items %}
             <tr>
-                        <div class="ml-3 d-inline-block align-middle">
-                            <td class="border-0 align-middle"><strong>{{ item.item.name }}</strong></td>
-                        </div>
+                <div class="ml-3 d-inline-block align-middle">
+                    <td class="border-0 align-middle"><strong>{{ item.item.name }}</strong></td>
+                </div>
                 <td class="border-0 align-middle"><strong>{{ item.quantity }}</strong></td>
                 <td class="align-middle">
                     <div class="form-group">
