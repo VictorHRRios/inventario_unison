@@ -149,7 +149,9 @@ def save_cart(request):
 
 def add_stock(request):
     item = Item.objects.all()
-    temp_user = User.objects.get(username="ADMIN")
+    temp_user, created = User.objects.get_or_create(
+        username="ADMIN",
+    )
     cart_items = ShoppingCart.objects.filter(user=temp_user.id)
     context = {
         'title': 'Order Item',
@@ -163,9 +165,7 @@ def add_to_stock(request, item_id):
     item = Item.objects.get(id=item_id)
     quantity = request.POST.get('quantity')
     username = "ADMIN"
-    temp_user, created = User.objects.get_or_create(
-        username=username,
-    )
+    temp_user = User.objects.get(username="ADMIN")
     cart_item, created = ShoppingCart.objects.get_or_create(
         item=item,
         user=temp_user,
