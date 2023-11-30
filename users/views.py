@@ -49,10 +49,9 @@ def display_profile(request, user_id):
 
 def manage_users(request):
     if request.user.is_staff:
-        staff_users = User.objects.filter(is_staff=True)
         non_staff_users = User.objects.filter(is_staff=False)
         return render(request, 'users/manage_users.html',
-                      {'staff_users': staff_users, 'non_staff_users': non_staff_users})
+                      {'non_staff_users': non_staff_users})
     else:
         messages.error(request, 'No tienes acceso a esta pagina')
     return render(request, 'users/manage_users.html')

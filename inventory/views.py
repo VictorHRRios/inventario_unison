@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Item, ShoppingCart, Report, Order
-from .forms import ItemCreateForm
+from .models import Item, ShoppingCart, Report, Order, User
+from .forms import ItemCreateForm, ItemAddForm
 
 
 @login_required
@@ -144,3 +144,58 @@ def save_cart(request):
     cart_items.delete()
 
     return redirect('shopping_cart')
+
+
+def add_stock(request):
+    item = Item.objects.all()
+    temp_user = User.objects.get(username="ADMIN")
+    cart_items = ShoppingCart.objects.filter(user=temp_user.id)
+    context = {
+        'title': 'Order Item',
+        'item': item,
+        'cart_items': cart_items
+    }
+    return render(request, 'inventory/add_stock.html', context)
+
+
+def add_to_stock(request, item_id):
+    item = Item.objects.get(id=item_id)
+    quantity = request.POST.get('quantity')
+    username = "ADMIN"
+    temp_user, created = User.objects.get_or_create(
+        username=username,
+    )
+    temp_user
+    cart_item, created = ShoppingCart.objects.get_or_create(
+        item=item,
+        user=temp_user,
+        defaults={'quantity': int(quantity)}
+    )
+    if not created:
+        cart_item.quantity += int(quantity)
+        cart_item.save()
+        print(cart_item.quantity)
+    return redirect('add_stock')
+
+
+def save_input(request):
+    temp_user = User.objects.get(username="ADMIN")
+    cart_items = ShoppingCart.objects.filter(user=temp_user.id)
+    reason = request.POST.get('reason')
+    report = Report.objects.create(
+        movement='entrada',
+        user=temp_user,
+        reason=reason
+    )
+    for cart_item in cart_items:
+        order = Order.objects.create(
+            item=cart_item.item,
+            quantity=cart_item.quantity,
+            report=report
+        )
+        cart_item.item.stock += cart_item.quantity
+        cart_item.item.save()
+    report.save()
+    order.save()
+    cart_items.delete()
+    return redirect('manage_items')
