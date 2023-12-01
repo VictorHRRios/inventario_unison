@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 
@@ -14,7 +15,7 @@ def profile(request):
         if p_form.is_valid():
             p_form.save()
             messages.success(request, f'Tu perfil se ha actualizado!')
-            return redirect('profile')
+            # return redirect('profile')
     else:
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
@@ -24,7 +25,7 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
-@login_required
+@staff_member_required
 def display_profile(request, user_id):
     u_form = User.objects.get(id=user_id)
 
@@ -47,6 +48,7 @@ def display_profile(request, user_id):
     return render(request, 'users/display_profile.html', context)
 
 
+@staff_member_required
 def manage_users(request):
     if request.user.is_staff:
         non_staff_users = User.objects.filter(is_staff=False)
@@ -57,6 +59,7 @@ def manage_users(request):
     return render(request, 'users/manage_users.html')
 
 
+@staff_member_required
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -71,6 +74,7 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 
+@staff_member_required
 def update_user(request, user_id):
     user = User.objects.get(id=user_id)
     form = UserUpdateForm(request.POST, instance=user)
@@ -85,7 +89,16 @@ def update_user(request, user_id):
     return render(request, 'users/update_user.html', {'form': form})
 
 
-def delete_user(request, user_id):
+@staff_member_required
+def deactivate_user(request, user_id):
     user = User.objects.get(id=user_id)
-    user.delete()
+    user.is_active = False
+    user.save()
+    return redirect('manage_users')
+
+@staff_member_required
+def activate_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    user.is_active = True
+    user.save()
     return redirect('manage_users')

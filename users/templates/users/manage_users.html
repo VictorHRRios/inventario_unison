@@ -6,8 +6,8 @@
             <th scope="col">Nombre</th>
             <th scope="col">Rol</th>
             <th scope="col">Creado en</th>
-            <th scope="col">Ultima sesion</th>
-            <th scope="col">Accion</th>
+            <th scope="col">Ultima sesión</th>
+            <th scope="col">Acción</th>
         </tr>
         </thead>
         <tbody>
@@ -33,7 +33,7 @@
         {% for user in non_staff_users %}
             <tr>
                 <th scope="row">
-                    <a href="{% url 'display_profile' user.id %}">{{ user.username }}</a>
+                    <a href="{% url 'display_profile' user.id %}">{{ user.first_name }}</a>
                 </th>
                 <td> Intendente</td>
                 <td> {{ user.date_joined.date }}</td>
@@ -45,11 +45,20 @@
                             <form method="get" action="{% url 'update_user' user.id %}">
                                 <button class="btn btn-outline-primary" type="submit">Actualizar</button>
                             </form>
-                            <form method="get" action="{% url 'delete_user' user.id %}">
+                            {% if user.is_active %}
+                                <form method="get" action="{% url 'deactivate_user' user.id %}">
                                 <button class="btn btn-outline-danger" onclick="return confirmDelete();" type="submit">
-                                    Eliminar
+                                    Deshabilitar
                                 </button>
                             </form>
+                            {% else %}
+                                <form method="get" action="{% url 'activate_user' user.id %}">
+                                <button class="btn btn-outline-success" onclick="return confirmDelete();" type="submit">
+                                    Habilitar
+                                </button>
+                            </form>
+                            {% endif %}
+
                         </div>
                     </div>
 
@@ -69,7 +78,7 @@
 
     <script>
         function confirmDelete() {
-            return confirm("Estas seguro que quieres eliminar este usuario?");
+            return confirm("¿Estás seguro que quieres cambiar el estado de este usuario?");
         }
     </script>
 

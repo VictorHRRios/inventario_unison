@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Item, ShoppingCart, Report, Order, User
@@ -8,16 +9,21 @@ import json
 
 @login_required
 def home(request):
+    item = Item.objects.all()
     context = {
+        'title': 'Order Item',
+        'item': item,
     }
-    return render(request, 'inventory/home.html', context)
+    return render(request, 'inventory/request_item.html', context)
 
 
+@staff_member_required
 def movement_info(request, movement_id):
     orders = Order.objects.filter(report_id=movement_id)
     return render(request, 'inventory/movement_info.html', {'title': 'Movement Info', 'orders': orders})
 
 
+@staff_member_required
 def budget_stats(request):
     form = DateRangeForm()
     outlays = []
@@ -52,16 +58,19 @@ def budget_stats(request):
     return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats', 'form': form, 'movements': movements})
 
 
+@staff_member_required
 def product_stats(request):
     return render(request, 'stats/product_stats.html', {'title': 'Product Stats'})
 
 
+@staff_member_required
 def movements(request):
     movements = Report.objects.all().order_by('-date')
     return render(request, 'inventory/movements.html',
                   {'title': 'Stock Movements', 'movements': movements})
 
 
+@login_required
 def shopping_cart(request):
     cart_items = ShoppingCart.objects.filter(user=request.user)
     for cart_item in cart_items:
@@ -76,15 +85,7 @@ def shopping_cart(request):
     return render(request, 'inventory/shopping_cart.html', {'title': 'Shopping Cart', 'cart_items': cart_items})
 
 
-def request_item(request):
-    item = Item.objects.all()
-    context = {
-        'title': 'Order Item',
-        'item': item,
-    }
-    return render(request, 'inventory/request_item.html', context)
-
-
+@login_required
 def add_to_cart(request, item_id):
     item = Item.objects.get(id=item_id)
     quantity = request.POST.get('quantity')
@@ -100,9 +101,10 @@ def add_to_cart(request, item_id):
         messages.warning(request, f'No hay suficientes articulos en el carrito')
         cart_item.quantity = cart_item.item.stock
         cart_item.save()
-    return redirect('request_item')
+    return redirect('inventory-home')
 
 
+@login_required
 def remove_item(request, item_id):
     user = request.user
     cart_item = ShoppingCart.objects.get(pk=item_id, user=user)
@@ -110,17 +112,20 @@ def remove_item(request, item_id):
     return redirect('shopping_cart')
 
 
+@staff_member_required
 def manage_items(request):
     items = Item.objects.all()
     return render(request, 'inventory/manage_items.html', {'items': items})
 
 
+@staff_member_required
 def delete_item(request, item_id):
     item = Item.objects.get(id=item_id)
     item.delete()
     return redirect('manage_items')
 
 
+@staff_member_required
 def create_item(request):
     if request.method == 'POST':
         form = ItemCreateForm(request.POST, request.FILES)
@@ -133,11 +138,13 @@ def create_item(request):
     return render(request, 'inventory/create_item.html', {'form': form})
 
 
+@login_required
 def display_item(request, item_id):
     form = Item.objects.get(id=item_id)
     return render(request, 'inventory/display_item.html', {'form': form})
 
 
+@staff_member_required
 def update_item(request, item_id):
     item = Item.objects.get(id=item_id)
     form = ItemCreateForm(request.POST, instance=item)
@@ -152,6 +159,7 @@ def update_item(request, item_id):
     return render(request, 'inventory/update_item.html', {'form': form})
 
 
+@login_required
 def save_cart(request):
     cart_items = ShoppingCart.objects.filter(user=request.user)
 
@@ -165,6 +173,7 @@ def save_cart(request):
         Order.objects.create(
             item=cart_item.item,
             quantity=cart_item.quantity,
+            price=cart_item.item.unit_price,
             report=report
         )
         cart_item.item.stock -= cart_item.quantity
@@ -175,6 +184,7 @@ def save_cart(request):
     return redirect('shopping_cart')
 
 
+@staff_member_required
 def add_stock(request):
     item = Item.objects.all()
     temp_user, created = User.objects.get_or_create(
@@ -190,6 +200,7 @@ def add_stock(request):
     return render(request, 'inventory/add_stock.html', context)
 
 
+@staff_member_required
 def add_to_stock(request, item_id):
     item = Item.objects.get(id=item_id)
     quantity = request.POST.get('quantity')
@@ -205,6 +216,7 @@ def add_to_stock(request, item_id):
     return redirect('add_stock')
 
 
+@staff_member_required
 def save_input(request):
     temp_user = User.objects.get(username="ADMIN")
     cart_items = ShoppingCart.objects.filter(user=temp_user.id)
@@ -218,6 +230,7 @@ def save_input(request):
         Order.objects.create(
             item=cart_item.item,
             quantity=cart_item.quantity,
+            price=cart_item.item.unit_price,
             report=report
         )
         cart_item.item.stock += cart_item.quantity
@@ -227,6 +240,7 @@ def save_input(request):
     return redirect('manage_items')
 
 
+@staff_member_required
 def remove_item_stock(request, item_id):
     temp_user = User.objects.get(username="ADMIN")
     cart_item = ShoppingCart.objects.get(pk=item_id, user=temp_user)

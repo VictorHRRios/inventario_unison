@@ -16,13 +16,13 @@ class Report(models.Model):
         ('salida', 'Salida'),
     ]
 
-    date = models.DateField(default=timezone.now)
+    date = models.DateTimeField(default=timezone.now)
     movement = models.CharField(max_length=10, choices=TYPE_MOVEMENT)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reason = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"[{self.date}] {self.user.username} : {self.movement}"
+        return f"[{self.id}] {self.user.username} : {self.movement}"
 
 
 class Item(models.Model):
@@ -42,7 +42,7 @@ class Item(models.Model):
 
     name = models.CharField(max_length=255)
     image = models.ImageField(default='default_item.jpg', upload_to='item_pics')
-    id = models.AutoField(primary_key=True)
+    sku = models.DecimalField(max_digits=10, decimal_places=0)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     description = models.TextField()
     unit_type = models.CharField(max_length=20, choices=UNIT_CHOICES)
@@ -66,6 +66,7 @@ class Item(models.Model):
 class Order(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
     def __str__(self):

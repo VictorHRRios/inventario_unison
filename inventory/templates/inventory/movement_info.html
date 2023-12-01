@@ -9,6 +9,7 @@
         <tr>
             <th scope="col">Articulo</th>
             <th scope="col">Cantidad</th>
+            <th scope="col">Precio por unidad</th>
         </tr>
         </thead>
         <tbody>
@@ -18,6 +19,7 @@
                     {{ order.item.name }}
                 </th>
                 <td> {{ order.quantity }}</td>
+                <td> {{ order.price }}</td>
             </tr>
         {% endfor %}
         </tbody>

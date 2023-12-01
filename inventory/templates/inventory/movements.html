@@ -6,22 +6,25 @@
     <table class="table table-striped">
         <thead>
         <tr>
+            <th scope="col">ID</th>
             <th scope="col">Usuario</th>
             <th scope="col">Tipo de Movimiento</th>
             <th scope="col">Fecha</th>
-            <th scope="col">Mas info</th>
+            <th scope="col">Información</th>
         </tr>
         </thead>
         <tbody>
         {% for movement in movements %}
             <tr>
                 <th scope="row">
-                    <a href="{% url 'display_profile' movement.user.id %}">{{ movement.user.username }}</a>
+                    {{ movement.id }}
                 </th>
+                <td><a href="{% url 'display_profile' movement.user.id %}">{{ movement.user.first_name }}</a>
+                </td>
                 <td> {{ movement.movement }}</td>
-                <td> {{ movement.date }}</td>
+                <td> {{ movement.date|date:"[H:i] d M, Y" }}</td>
                 <td>
-                    <a href="{% url 'movement_info' movement.id %}"> Movimientos</a>
+                    <a href="{% url 'movement_info' movement.id %}"> Más detalles</a>
                 </td>
             </tr>
         {% endfor %}

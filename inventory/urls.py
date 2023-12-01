@@ -20,5 +20,4 @@ urlpatterns = [
     path('shopping_cart/', views.shopping_cart, name='shopping_cart'),
     path('save_cart/', views.save_cart, name='save_cart'),
     path('save_input/', views.save_input, name='save_input'),
-    path('request_item/', views.request_item, name='request_item'),
 ]

@@ -32,7 +32,7 @@
             margin-bottom: 20px;
         }
 
-        .single-shop-product .description {
+        .single-shop-product .id {
             font-size: 14px;
             margin-bottom: 10px;
         }
@@ -95,6 +95,7 @@
                 <a href="#" class="dropdown-item filter-link" onclick="filterSelection('electricidad')">Electricidad</a>
             </div>
         </div>
+    <br>
 
     <div class="single-product-area">
             <div class="row">
@@ -106,7 +107,7 @@
                             </div>
                             <div class="product-details">
                                 <h2><a href="{% url 'display_item' items.id %}">{{ items.name }}</a></h2>
-                                <p class="description">Descripción: {{ items.description }}</p>
+                                <p class="id">SKU: {{ items.sku }}</p>
                                 <p class="stock">Disponibilidad: {{ items.stock }}</p>
                                 {% if items.stock == 0 %}
                                     <div class="mt-3">
