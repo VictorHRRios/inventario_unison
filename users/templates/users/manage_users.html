@@ -1,85 +1,89 @@
 {% extends "base.html" %}
 {% block content %}
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Rol</th>
-            <th scope="col">Creado en</th>
-            <th scope="col">Ultima sesión</th>
-            <th scope="col">Acción</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for user in staff_users %}
+    <div class="content-section">
+
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <th scope="row"> {{ user.username }}</th>
-                <td> Admin</td>
-                <td> {{ user.date_joined.date }}</td>
-                <td> {{ user.last_login.date }}</td>
-                <td>
-
-                    <div class="form-group">
-                        <div class="btn-group" role="group">
-                            <button class="btn btn-outline-secondary disabled">Actualizar</button>
-                            <button class="btn btn-outline-secondary disabled">Eliminar</button>
-                        </div>
-                    </div>
-
-                </td>
-
+                <th scope="col">Nombre</th>
+                <th scope="col">Rol</th>
+                <th scope="col">Creado en</th>
+                <th scope="col">Ultima sesión</th>
+                <th scope="col">Acción</th>
             </tr>
-        {% endfor %}
-        {% for user in non_staff_users %}
-            <tr>
-                <th scope="row">
-                    <a href="{% url 'display_profile' user.id %}">{{ user.first_name }}</a>
-                </th>
-                <td> Intendente</td>
-                <td> {{ user.date_joined.date }}</td>
-                <td> {{ user.last_login.date }}</td>
-                <td>
+            </thead>
+            <tbody>
+            {% for user in staff_users %}
+                <tr>
+                    <th scope="row"> {{ user.username }}</th>
+                    <td> Admin</td>
+                    <td> {{ user.date_joined.date }}</td>
+                    <td> {{ user.last_login.date }}</td>
+                    <td>
 
-                    <div class="form-group">
-                        <div class="btn-group" role="group">
-                            <form method="get" action="{% url 'update_user' user.id %}">
-                                <button class="btn btn-outline-primary" type="submit">Actualizar</button>
-                            </form>
-                            {% if user.is_active %}
-                                <form method="get" action="{% url 'deactivate_user' user.id %}">
-                                <button class="btn btn-outline-danger" onclick="return confirmDelete();" type="submit">
-                                    Deshabilitar
-                                </button>
-                            </form>
-                            {% else %}
-                                <form method="get" action="{% url 'activate_user' user.id %}">
-                                <button class="btn btn-outline-success" onclick="return confirmDelete();" type="submit">
-                                    Habilitar
-                                </button>
-                            </form>
-                            {% endif %}
-
+                        <div class="form-group">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-secondary disabled">Actualizar</button>
+                                <button class="btn btn-outline-secondary disabled">Eliminar</button>
+                            </div>
                         </div>
-                    </div>
 
-                </td>
+                    </td>
 
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <form method="get" action="{% url 'register' %}">
-        <div class="d-grid gap-2 col-10 mx-auto">
-            <div class="form-group">
-                <button class="btn btn-outline-success" type="submit">Registrar</button>
+                </tr>
+            {% endfor %}
+            {% for user in non_staff_users %}
+                <tr>
+                    <th scope="row">
+                        <a href="{% url 'display_profile' user.id %}">{{ user.first_name }}</a>
+                    </th>
+                    <td> Intendente</td>
+                    <td> {{ user.date_joined.date }}</td>
+                    <td> {{ user.last_login.date }}</td>
+                    <td>
+
+                        <div class="form-group">
+                            <div class="btn-group" role="group">
+                                <form method="get" action="{% url 'update_user' user.id %}">
+                                    <button class="btn btn-outline-primary" type="submit">Actualizar</button>
+                                </form>
+                                {% if user.is_active %}
+                                    <form method="get" action="{% url 'deactivate_user' user.id %}">
+                                        <button class="btn btn-outline-danger" onclick="return confirmDelete();"
+                                                type="submit">
+                                            Deshabilitar
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="get" action="{% url 'activate_user' user.id %}">
+                                        <button class="btn btn-outline-success" onclick="return confirmDelete();"
+                                                type="submit">
+                                            Habilitar
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <form method="get" action="{% url 'register' %}">
+            <div class="d-grid gap-2 col-10 mx-auto">
+                <div class="form-group">
+                    <button class="btn btn-outline-success" type="submit">Registrar</button>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
 
-    <script>
-        function confirmDelete() {
-            return confirm("¿Estás seguro que quieres cambiar el estado de este usuario?");
-        }
-    </script>
-
+        <script>
+            function confirmDelete() {
+                return confirm("¿Estás seguro que quieres cambiar el estado de este usuario?");
+            }
+        </script>
+    </div>
 {% endblock content %}

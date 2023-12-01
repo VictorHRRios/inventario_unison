@@ -15,7 +15,7 @@ def profile(request):
         if p_form.is_valid():
             p_form.save()
             messages.success(request, f'Tu perfil se ha actualizado!')
-            # return redirect('profile')
+            return redirect('profile')
     else:
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
@@ -50,13 +50,9 @@ def display_profile(request, user_id):
 
 @staff_member_required
 def manage_users(request):
-    if request.user.is_staff:
-        non_staff_users = User.objects.filter(is_staff=False)
-        return render(request, 'users/manage_users.html',
-                      {'non_staff_users': non_staff_users})
-    else:
-        messages.error(request, 'No tienes acceso a esta pagina')
-    return render(request, 'users/manage_users.html')
+    non_staff_users = User.objects.filter(is_staff=False)
+    return render(request, 'users/manage_users.html',
+                  {'non_staff_users': non_staff_users})
 
 
 @staff_member_required
@@ -67,7 +63,7 @@ def register(request):
             new_user = form.save(commit=False)
             new_user.username = form.cleaned_data['email']
             new_user.save()
-            messages.success(request, f'Your account has been created! You can now log in')
+            messages.success(request, f'La cuenta se ha creado')
             return redirect('manage_users')
     else:
         form = UserRegisterForm()
@@ -82,7 +78,7 @@ def update_user(request, user_id):
         form = UserUpdateForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'La informacion del ususario se ha actualizado.')
+            messages.success(request, 'La información del usuario se ha actualizado.')
             return redirect('manage_users')
     else:
         form = UserUpdateForm(instance=user)
@@ -95,6 +91,7 @@ def deactivate_user(request, user_id):
     user.is_active = False
     user.save()
     return redirect('manage_users')
+
 
 @staff_member_required
 def activate_user(request, user_id):

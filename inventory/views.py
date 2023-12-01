@@ -20,7 +20,10 @@ def home(request):
 @staff_member_required
 def movement_info(request, movement_id):
     orders = Order.objects.filter(report_id=movement_id)
-    return render(request, 'inventory/movement_info.html', {'title': 'Movement Info', 'orders': orders})
+    total = 0
+    for order in orders:
+        total += order.price * order.quantity
+    return render(request, 'inventory/movement_info.html', {'title': 'Movement Info', 'orders': orders, 'total': total})
 
 
 @staff_member_required
@@ -65,9 +68,12 @@ def product_stats(request):
 
 @staff_member_required
 def movements(request):
-    movements = Report.objects.all().order_by('-date')
+    # movements = Report.objects.all().order_by('-date')
+    movements_input = Report.objects.filter(movement='entrada')
+    movements_output = Report.objects.filter(movement='salida')
     return render(request, 'inventory/movements.html',
-                  {'title': 'Stock Movements', 'movements': movements})
+                  {'title': 'Stock Movements', 'movements_input': movements_input,
+                   'movements_output': movements_output})
 
 
 @login_required

@@ -3,31 +3,68 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Usuario</th>
-            <th scope="col">Tipo de Movimiento</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Información</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for movement in movements %}
+    <div class="content-section">
+        <h2 class="report-header">Entradas</h2>
+
+
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <th scope="row">
-                    {{ movement.id }}
-                </th>
-                <td><a href="{% url 'display_profile' movement.user.id %}">{{ movement.user.first_name }}</a>
-                </td>
-                <td> {{ movement.movement }}</td>
-                <td> {{ movement.date|date:"[H:i] d M, Y" }}</td>
-                <td>
-                    <a href="{% url 'movement_info' movement.id %}"> Más detalles</a>
-                </td>
+                <th scope="col">ID</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Información</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for movement_input in movements_input %}
+                <tr>
+                    <th scope="row">
+                        {{ movement_input.id }}
+                    </th>
+                    <td>
+                        <a href="{% url 'display_profile' movement_input.user.id %}">{{ movement_input.user.first_name }}</a>
+                    </td>
+                    <td> {{ movement_input.date|date:"[H:i] d M, Y" }}</td>
+                    <td>
+                        <a href="{% url 'movement_info' movement_input.id %}"> Más detalles</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="content-section">
+        <h2 class="report-header">Salidas</h2>
+
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Información</th>
+            </tr>
+            </thead>
+            <tbody>
+            <br>
+            {% for movement in movements_output %}
+                <tr>
+                    <th scope="row">
+                        {{ movement.id }}
+                    </th>
+                    <td>
+                        <a href="{% url 'display_profile' movement.user.id %}">{{ movement.user.first_name }}</a>
+                    </td>
+                    <td> {{ movement.date|date:"[H:i] d M, Y" }}</td>
+                    <td>
+                        <a href="{% url 'movement_info' movement.id %}"> Más detalles</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 {% endblock content %}

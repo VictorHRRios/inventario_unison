@@ -3,26 +3,32 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <h3>{{ orders.first.report }}</h3>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Articulo</th>
-            <th scope="col">Cantidad</th>
-            <th scope="col">Precio por unidad</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for order in orders %}
+    <div class="content-section">
+
+        <h3>{{ orders.first.report }}</h3>
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <th scope="row">
-                    {{ order.item.name }}
-                </th>
-                <td> {{ order.quantity }}</td>
-                <td> {{ order.price }}</td>
+                <th scope="col">Articulo</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Precio por unidad</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <h3>{{ orders.first.report.reason }}</h3>
+            </thead>
+            <tbody>
+
+            {% for order in orders %}
+                <tr>
+                    <th scope="row">
+                        {{ order.item.name }}
+                    </th>
+                    <td> {{ order.quantity }}</td>
+                    <td> {{ order.price }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+                <legend class="border-bottom mb-4">Cifra total: {{ total }}</legend>
+
+                    <p class="text-secondary">{{ orders.first.report.reason }}</p>
+    </div>
 {% endblock content %}
