@@ -18,7 +18,6 @@ class ItemCreateForm(forms.ModelForm):
         self.fields['unit_price'].label = 'Precio de Unidad'
         self.fields['low_stock_threshold'].label = 'Umbral de existencias'
 
-
 class TextForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'cols': 30, 'rows': 2}),
                              label='Especifíca porqué necesitas estos objetos.')

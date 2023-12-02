@@ -40,6 +40,7 @@ def budget_stats(request):
     form = DateRangeForm()
     outlays = []
     entrys = []
+    
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
