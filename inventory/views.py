@@ -10,9 +10,18 @@ import json
 @login_required
 def home(request):
     item = Item.objects.all()
+    categories = item.values_list('category', flat=True).distinct()
+
+    selected_category = request.GET.get('category')
+
+    if selected_category:
+        item = item.filter(category=selected_category)
+
     context = {
         'title': 'Order Item',
         'item': item,
+        'categories' : categories,
+        'selected_category' : selected_category,
     }
     return render(request, 'inventory/request_item.html', context)
 
@@ -69,8 +78,8 @@ def product_stats(request):
 @staff_member_required
 def movements(request):
     # movements = Report.objects.all().order_by('-date')
-    movements_input = Report.objects.filter(movement='entrada')
-    movements_output = Report.objects.filter(movement='salida')
+    movements_input = Report.objects.filter(movement='entrada').order_by('-date')
+    movements_output = Report.objects.filter(movement='salida').order_by('-date')
     return render(request, 'inventory/movements.html',
                   {'title': 'Stock Movements', 'movements_input': movements_input,
                    'movements_output': movements_output})
@@ -83,10 +92,10 @@ def shopping_cart(request):
         if cart_item.quantity > cart_item.item.stock:
             cart_item.quantity = cart_item.item.stock
             cart_item.save()
-            messages.warning(request, f'El stock del carrito ha sido modificado')
+            messages.warning(request, f'El stock del carrito ha sido modificado.')
         elif cart_item.quantity == 0:
             cart_item.delete()
-            messages.warning(request, f'Un elemento del carrito ha sido eliminado por cambios en el stock')
+            messages.warning(request, f'Un elemento del carrito ha sido eliminado por cambios en el stock.')
             return redirect('shopping_cart')
     return render(request, 'inventory/shopping_cart.html', {'title': 'Shopping Cart', 'cart_items': cart_items})
 
@@ -104,10 +113,10 @@ def add_to_cart(request, item_id):
         cart_item.quantity += int(quantity)
         cart_item.save()
     if cart_item.quantity > cart_item.item.stock:
-        messages.warning(request, f'No hay suficientes articulos en el carrito')
+        messages.warning(request, f'No hay suficientes artículos en almacén.')
         cart_item.quantity = cart_item.item.stock
         cart_item.save()
-    return redirect('inventory-home')
+    return redirect('shopping_cart')
 
 
 @login_required
@@ -137,7 +146,7 @@ def create_item(request):
         form = ItemCreateForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Tu articulo ha sido creado')
+            messages.success(request, f'Tu artículo ha sido creado')
             return redirect('manage_items')
     else:
         form = ItemCreateForm()
@@ -158,7 +167,7 @@ def update_item(request, item_id):
         form = ItemCreateForm(request.POST, request.FILES, instance=item)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Tu articulo ha sido actualizado')
+            messages.success(request, f'Tu artículo ha sido actualizado.')
             return redirect('manage_items')
     else:
         form = ItemCreateForm(instance=item)
@@ -186,6 +195,7 @@ def save_cart(request):
         cart_item.item.save()
     report.save()
     cart_items.delete()
+    messages.success(request, f'Se ha generado un reporte de la transacción.')
 
     return redirect('shopping_cart')
 
@@ -243,6 +253,7 @@ def save_input(request):
         cart_item.item.save()
     report.save()
     cart_items.delete()
+    messages.success(request, f'Se ha generado un reporte de la transacción.')
     return redirect('manage_items')
 
 
