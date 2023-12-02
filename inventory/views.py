@@ -204,6 +204,14 @@ def save_cart(request):
 @staff_member_required
 def add_stock(request):
     item = Item.objects.all()
+
+    categories = item.values_list('category', flat=True).distinct()
+
+    selected_category = request.GET.get('category')
+
+    if selected_category:
+        item = item.filter(category=selected_category)
+
     temp_user, created = User.objects.get_or_create(
         username="ADMIN",
         is_staff=True
@@ -212,7 +220,9 @@ def add_stock(request):
     context = {
         'title': 'Order Item',
         'item': item,
-        'cart_items': cart_items
+        'cart_items': cart_items,
+        'categories' : categories,
+        'selected_category' : selected_category,
     }
     return render(request, 'inventory/add_stock.html', context)
 
