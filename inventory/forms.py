@@ -31,6 +31,7 @@ class ItemAddForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['stock'].label = 'Cantidad a agregar'
+
 class DateRangeForm(forms.Form):
-    start_date = forms.DateField(label='Fecha de inicio', widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(label='Fecha final', widget=forms.DateInput(attrs={'type': 'date'}))
+    start_date = forms.DateField(label='Fecha inicio', widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(label='Fecha final ', widget=forms.DateInput(attrs={'type': 'date'}))

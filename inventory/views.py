@@ -44,7 +44,7 @@ def budget_stats(request):
             unit_price = order.item.unit_price
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
-        outlays.append([str(mov.date), float(cash)])
+        outlays.append([str(mov.date), float(cash), str(order.id)])
 
     for mov in entrys_movements:
         cash = 0
@@ -52,8 +52,7 @@ def budget_stats(request):
             unit_price = order.item.unit_price
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
-        entrys.append([str(mov.date), float(cash)])
-
+        entrys.append([str(mov.date), float(cash), str(order.id)])
     movements = {
         'outlays': json.dumps(outlays),
         'entrys': json.dumps(entrys)
