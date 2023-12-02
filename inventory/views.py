@@ -69,8 +69,8 @@ def product_stats(request):
 @staff_member_required
 def movements(request):
     # movements = Report.objects.all().order_by('-date')
-    movements_input = Report.objects.filter(movement='entrada')
-    movements_output = Report.objects.filter(movement='salida')
+    movements_input = Report.objects.filter(movement='entrada').order_by('-date')
+    movements_output = Report.objects.filter(movement='salida').order_by('-date')
     return render(request, 'inventory/movements.html',
                   {'title': 'Stock Movements', 'movements_input': movements_input,
                    'movements_output': movements_output})
@@ -107,7 +107,7 @@ def add_to_cart(request, item_id):
         messages.warning(request, f'No hay suficientes articulos en el carrito')
         cart_item.quantity = cart_item.item.stock
         cart_item.save()
-    return redirect('inventory-home')
+    return redirect('shopping_cart')
 
 
 @login_required
@@ -186,6 +186,7 @@ def save_cart(request):
         cart_item.item.save()
     report.save()
     cart_items.delete()
+    messages.success(request, f'Se ha generado un reporte de la transacción')
 
     return redirect('shopping_cart')
 
@@ -243,6 +244,7 @@ def save_input(request):
         cart_item.item.save()
     report.save()
     cart_items.delete()
+    messages.success(request, f'Se ha generado un reporte de la transacción')
     return redirect('manage_items')
 
 

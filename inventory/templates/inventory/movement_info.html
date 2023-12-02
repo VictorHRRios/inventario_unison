@@ -19,7 +19,7 @@
             {% for order in orders %}
                 <tr>
                     <th scope="row">
-                        {{ order.item.name }}
+                    <a href="{% url 'display_item' order.item.id %}">{{ order.item.name }}</a>
                     </th>
                     <td> {{ order.quantity }}</td>
                     <td> {{ order.price }}</td>
@@ -27,8 +27,8 @@
             {% endfor %}
             </tbody>
         </table>
-                <legend class="border-bottom mb-4">Cifra total: {{ total }}</legend>
+        <legend class="border-bottom mb-4">Cifra total: {{ total }}</legend>
 
-                    <p class="text-secondary">{{ orders.first.report.reason }}</p>
+        <p class="text-secondary">{{ orders.first.report.reason }}</p>
     </div>
 {% endblock content %}
