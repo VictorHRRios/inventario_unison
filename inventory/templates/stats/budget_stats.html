@@ -139,7 +139,7 @@
             <h2>ID: </h2>
             <p id="max-entry-id-id"></p>
             <h3>Dinero ingresado: </h3>
-            <p id="max-entry-id-date"></p>
+            <p id="max-entry-id-value"></p>
           </div>
         </div>
 
@@ -217,7 +217,7 @@
         document.getElementById("max-outlay-value").textContent = dynamic_outlays_dataset[1][0] + " $";
         document.getElementById("max-entry-date").textContent = dynamic_entry_date;
         document.getElementById("max-outlay-date").textContent = dynamic_outlay_date;
-        
+
         document.getElementById("max-entry-id-value").textContent = dynamic_entrys_dataset[2][1] + " $";
         document.getElementById("max-outlay-id-value").textContent = dynamic_outlays_dataset[2][1] + " $";
         
@@ -293,13 +293,18 @@
         let aux;
         let sum;
         max_entry_id = ["No hay entradas", 0] // ID, val
-        max_entry = [0, 0, 0, 0] // val, año, mes, dia
+        max_entry = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
         for (var date of dates) {
             aux = false;
             sum = 0;
             for (var entry of entrys_list) {
                 if (JSON.stringify(date) == JSON.stringify(entry[0])) {
-                    sum = sum + cos;
+                    let ent = entry[1]
+                    if(ent >= max_entry_id[1]){
+                        max_entry_id[0] = entry[2];
+                        max_entry_id[1] = ent;
+                    }
+                    sum = sum + ent;
                     aux = true;
                 }
             }
@@ -311,14 +316,6 @@
             }
             else {
                 data.push(0)
-            }
-        }
-
-        for(var entry of entrys_list){
-            let ent = entry[1]
-            if(ent >= max_entry_id[1]){
-                max_entry_id[0] = entry[2];
-                max_entry_id[1] = ent;
             }
         }
         
@@ -339,14 +336,18 @@
         let aux;
         let sum;
         max_outlay_id = ["No hay salidas", 0] // ID, val
-        max_outlay = [0, 0, 0, 0] // val, año, mes, dia
+        max_outlay = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
         for (var date of dates) {
             aux = false;
             sum = 0;
             for (var outlay of outlays_list) {
                 if (JSON.stringify(date) == JSON.stringify(outlay[0])) {
-                    cost = outlay[1];
-                    sum = sum + cost;
+                    let out = outlay[1]
+                    if(out >= max_outlay_id[1]){
+                        max_outlay_id[0] = outlay[2];
+                        max_outlay_id[1] = out;
+                    }
+                    sum = sum + out;
                     aux = true;
                 }
             }
@@ -358,14 +359,6 @@
             }
             else {
                 data.push(0)
-            }
-        }
-        console.log(outlays_list);
-        for(var outlay of outlays_list){
-            let out = outlay[1]
-            if(out >= max_outlay_id[1]){
-                max_outlay_id[0] = outlay[2];
-                max_outlay_id[1] = out;
             }
         }
 
