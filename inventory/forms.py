@@ -34,4 +34,4 @@ class ItemAddForm(forms.ModelForm):
 
 class DateRangeForm(forms.Form):
     start_date = forms.DateField(label='Fecha inicio', widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(label='Fecha final ', widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(label='Fecha final', widget=forms.DateInput(attrs={'type': 'date'}))
