@@ -84,308 +84,55 @@
   </style>
 
 <div class="content-section">
-    <h2 class="report-header">Reporte <span class="highlight">del Presupuesto</span></h2>
-    <hr>
-    <form id="date-range-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-    </form>
-
-    <!-- Contenedor para el gráfico -->
-    <div>
-        <canvas id="myChart" width="400" height="200"></canvas>
-    </div>
-    <br><hr><br>
-    <div>
-      <h>Dinero total de entradas: </h>
-      <p id="total-entrys"></p>
-      <h>Dinero total de salidas: </h>
-      <p id="total-outlays"></p>
-    </div>
+  <h2 class="report-header">Reporte <span class="highlight">de los Articulos</span></h2>
+  <hr>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Dropdown de Inventario</title>
+  </head>
+  <body>
+      <form id="product-selector">
+          <label for="product">Selecciona un producto:</label>
+          <select id="product" name="product"></select>
+      </form>
+  </body>
+  </html>
 </div>
 
-<div class="content-section">
-    <header class="pb-3 mb-4 border-bottom">
-        <h2>Los Picos Monetarios del Inventario</h2>
-        <p id="time-interval-a"></p>
-      </a>
-    </header>
-    <div class="row align-items-md-stretch">
-        <div class="col-md-6">
-          <div class="h-100 p-5 bg-body-tertiary border rounded-3">
-            <h1>ENTRADA</h1>
-            <h2>Dinero ingresado: </h2>
-            <p id="max-entry-value"></p>
-            <h3>Fecha:</h3>
-            <p id="max-entry-date"></p>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="h-100 p-5 bg-body-tertiary border rounded-3">
-            <h1>SALIDA</h1>
-            <h2>Dinero retirado: </h2>
-            <p id="max-outlay-value"></p>
-            <h3>Fecha: </h3>
-            <p id="max-outlay-date"></p> 
-          </div>
-        </div>
-    </div>
-</div>
-
-<div class="content-section">
-    <header class="pb-3 mb-4 border-bottom">
-        <h2>Las facturas de mayor costo económicamente</h2>
-        <p id="time-interval-b"></p>
-      </a>
-    </header>
-    <div class="row align-items-md-stretch">
-        <div class="col-md-6">
-          <div class="h-100 p-5 bg-body-tertiary border rounded-3">
-            <h1>ENTRADA</h1>
-            <h2>ID: </h2>
-            <p id="max-entry-id-id"></p>
-            <h3>Dinero ingresado: </h3>
-            <p id="max-entry-id-value"></p>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="h-100 p-5 bg-body-tertiary border rounded-3">
-            <h1>SALIDA</h1>
-            <h2>ID: </h2>
-            <p id="max-outlay-id-id"></p>
-            <h3>Dinero retirado: </h3>
-            <p id="max-outlay-id-value"></p>
-          </div>
-        </div>
-    </div>
-</div><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-
-<!-- Tu código de Chart.js -->
 <script>
-    // Generar informacion dinamica para los datos estadisticos
-    const star_date = document.getElementById('informacion-container')
-    document.createElement("p").textContent = 5;
+  const aux = {
+    Sin_producto: 0,
+    Producto1: 10,
+    Producto2: 5,
+  };
 
-    // Obtener elementos del formulario y del gráfico
-    const date_range_form = document.getElementById('date-range-form');
-    const my_chart_canvas = document.getElementById('myChart');
-    const info_first_square = document.getElementById('contanier_1');
-    
-    const my_chart_context = my_chart_canvas.getContext('2d');
+  // Funcion para llenar el dropdown con opciones basadas en el inventario
+  function fillDropdown() {
+    // Conectarse al texto dinamico
+    const dropdown = document.getElementById("product");
 
-    let myChart; // Variable auxiliar para actualizar el canvas
-
-    // Función para generar el gráfico con fechas dinámicas
-    function generateDynamicData() {
-        if (myChart) {
-            myChart.destroy();
-        }
-        // Crear un nuevo canvas para evitar el error
-        const new_canvas = document.createElement('canvas');
-        new_canvas.id = 'myChart';
-        if (my_chart_canvas.parentNode != null) {
-            my_chart_canvas.parentNode.replaceChild(new_canvas, my_chart_canvas);
-        }
-
-        // Obtener el contexto del nuevo canvas
-        const updated_chart_canvas = document.getElementById('myChart');
-        const updated_chart_context = updated_chart_canvas.getContext('2d');
-
-        // Obtener las fechas seleccionadas del formulario
-        const start_date = document.getElementById('id_start_date').value;
-        const end_date = document.getElementById('id_end_date').value;
-
-        // Actualizar los intervalos de tiempo
-        var str_start_date = (start_date == "") ? "00-00-00" : start_date;
-        var str_end_date = (end_date == "") ? "00-00-00" : end_date;
-        document.getElementById("time-interval-a").textContent = "Durante el periodo de: " + str_start_date + " - " + str_end_date;
-        document.getElementById("time-interval-b").textContent = "Durante el periodo de: " + str_start_date + " - " + str_end_date;
-
-        // Simular la obtención de datos dinámicos para las fechas
-        const dynamic_date = getDatesBetween(start_date, end_date);
-        const dynamic_entrys_dataset = getEntrysBetween(dynamic_date); 
-        const dynamic_outlays_dataset = getOutlaysBetween(dynamic_date); 
-
-        // Asignacion de variables y actualizacion de texto
-        const dynamic_entrys = dynamic_entrys_dataset[0];
-        const dynamic_outlays = dynamic_outlays_dataset[0];
-        const dynamic_entry_date = "[" + dynamic_entrys_dataset[1][1] + "-" + 
-                                         dynamic_entrys_dataset[1][2] + "-" +
-                                         dynamic_entrys_dataset[1][3] + "]";
-        const dynamic_outlay_date = "[" + dynamic_outlays_dataset[1][1] + "-" +
-                                          dynamic_outlays_dataset[1][2] + "-" +
-                                          dynamic_outlays_dataset[1][3] + "]";
-        
-        document.getElementById("max-entry-value").textContent = dynamic_entrys_dataset[1][0] + " $";
-        document.getElementById("max-outlay-value").textContent = dynamic_outlays_dataset[1][0] + " $";
-        document.getElementById("max-entry-date").textContent = dynamic_entry_date;
-        document.getElementById("max-outlay-date").textContent = dynamic_outlay_date;
-
-        document.getElementById("max-entry-id-value").textContent = dynamic_entrys_dataset[2][1] + " $";
-        document.getElementById("max-outlay-id-value").textContent = dynamic_outlays_dataset[2][1] + " $";
-        
-        document.getElementById("max-entry-id-id").textContent = dynamic_entrys_dataset[2][0];
-        document.getElementById("max-outlay-id-id").textContent = dynamic_outlays_dataset[2][0];
-
-        document.getElementById("total-entrys").textContent = dynamic_entrys_dataset[3] + " $";
-        document.getElementById("total-outlays").textContent = dynamic_outlays_dataset[3] + " $";
-        
-
-
-        // Grafico
-        myChart = new Chart(updated_chart_context, {
-            type: "line",
-            data: {
-                labels: dynamic_date,
-                datasets: [
-                    {
-                        label: 'Dinero ingresado en materiales',
-                        backgroundColor: "rgba(92, 184, 92 ,1.0)",
-                        borderColor: "rgba(92, 184, 92, 0.5)",
-                        fontSize: 50,
-                        data: dynamic_entrys
-                    },
-                    {
-                        label: 'Dinero gastado en materiales',
-                        backgroundColor: "rgba(217, 83, 79, 1.0)",
-                        borderColor: "rgba(217, 83, 79, 0.5)",
-                        data: dynamic_outlays
-                    }
-                ]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        labels: {
-                            font : {
-                                size: 20
-                            }
-                    }
-                }
-            }
-            }
-        });
+    // Se llena el dropdown
+    for (const producto in aux) {
+      const option = document.createElement("option");
+      option.value = producto;
+      option.text = producto;
+      dropdown.add(option);
     }
+  }
 
-    function getDatesBetween(start_date, end_date) {
-        const dates = []
+  // Funcion para visualizar informacion dependiendo de la seleccion del dropdown
+  function showInfo(){
+    const selection = document.getElementById("product");
+    console.log(selection.value);
+  }
 
-        var s_date = new Date(start_date);
-        s_date.setDate(s_date.getDate() + 1); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
+  // Caso base para la primera vez que se abra la pagina
+  fillDropdown()
+  showInfo()
 
-        var e_date = new Date(end_date);
-        e_date.setDate(e_date.getDate() + 1); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
-
-        while (s_date <= e_date) {
-            var day = s_date.getDate();
-            var month = s_date.getMonth() + 1;
-            var year = s_date.getYear() + 1900;
-            s_date.setDate(s_date.getDate() + 1);
-            dates.push([day, month, year]);
-        }
-
-        return dates;
-    }
-
-    function getEntrysBetween(dates) {
-        var entrys_list = JSON.parse('{{ movements.entrys|safe|escapejs }}');
-        data = []
-        for (var entry of entrys_list) {
-            var entry_date = (entry[0]).split("-")
-            var day = parseInt(entry_date[2]);
-            var month = parseInt(entry_date[1]);
-            var year = parseInt(entry_date[0]);
-            entry[0] = [day, month, year]
-        }
-
-        let aux;
-        let sum;
-        total = 0;
-        max_entry_id = ["No hay entradas", 0] // ID, val
-        max_entry = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
-        for (var date of dates) {
-            aux = false;
-            sum = 0;
-            for (var entry of entrys_list) {
-                if (JSON.stringify(date) == JSON.stringify(entry[0])) {
-                    let ent = entry[1]
-                    if(ent >= max_entry_id[1]){
-                        max_entry_id[0] = entry[2];
-                        max_entry_id[1] = ent;
-                    }
-                    sum = sum + ent;
-                    aux = true;
-                }
-            }
-            if(sum >= max_entry[0]){
-                max_entry = [sum, date[0], date[1], date[2]];
-            }
-            if (aux) {
-                total = total + sum;
-                data.push(sum);
-            }
-            else {
-                data.push(0)
-            }
-        }
-        
-        return [data, max_entry, max_entry_id, total];
-    }
-
-    function getOutlaysBetween(dates) {
-        var outlays_list = JSON.parse('{{ movements.outlays|safe|escapejs }}');
-        data = []
-        for (var outlay of outlays_list) {
-            var outlay_date = (outlay[0]).split("-")
-            var day = parseInt(outlay_date[2]);
-            var month = parseInt(outlay_date[1]);
-            var year = parseInt(outlay_date[0]);
-            outlay[0] = [day, month, year]
-        }
-
-        let aux;
-        let sum;
-        total = 0;
-        max_outlay_id = ["No hay salidas", 0] // ID, val
-        max_outlay = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
-        for (var date of dates) {
-            aux = false;
-            sum = 0;
-            for (var outlay of outlays_list) {
-                if (JSON.stringify(date) == JSON.stringify(outlay[0])) {
-                    let out = outlay[1]
-                    if(out >= max_outlay_id[1]){
-                        console.log(outlay[2].id); 
-                        max_outlay_id[0] = outlay[2];
-                        max_outlay_id[1] = out;
-                    }
-                    sum = sum + out;
-                    aux = true;
-                }
-            }
-            if(sum >= max_outlay[0]){
-                max_outlay = [sum, date[0], date[1], date[2]];
-            }
-            if (aux) {
-                total = total + sum;
-                data.push(sum);
-            }
-            else {
-                data.push(0)
-            }
-        }
-
-        return [data, max_outlay, max_outlay_id, total];
-    }
-
-    // Agregar un escucha al formulario para actualizar el gráfico cuando cambian las fechas
-    date_range_form.addEventListener('change', generateDynamicData);
-
-    // Generar el gráfico inicial al cargar la página
-    generateDynamicData();
+  // Un escuchador para cuando se seleccione una lista
+  product.addEventListener('change', showInfo);
 </script>
+
 {% endblock content %}
