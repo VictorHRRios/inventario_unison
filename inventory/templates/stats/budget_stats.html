@@ -95,6 +95,13 @@
     <div>
         <canvas id="myChart" width="400" height="200"></canvas>
     </div>
+    <br><hr><br>
+    <div>
+      <h>Dinero total de entradas: </h>
+      <p id="total-entrys"></p>
+      <h>Dinero total de salidas: </h>
+      <p id="total-outlays"></p>
+    </div>
 </div>
 
 <div class="content-section">
@@ -224,7 +231,11 @@
         document.getElementById("max-entry-id-id").textContent = dynamic_entrys_dataset[2][0];
         document.getElementById("max-outlay-id-id").textContent = dynamic_outlays_dataset[2][0];
 
+        document.getElementById("total-entrys").textContent = dynamic_entrys_dataset[3] + " $";
+        document.getElementById("total-outlays").textContent = dynamic_outlays_dataset[3] + " $";
         
+
+
         // Grafico
         myChart = new Chart(updated_chart_context, {
             type: "line",
@@ -267,7 +278,7 @@
         s_date.setDate(s_date.getDate() + 1); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
 
         var e_date = new Date(end_date);
-        e_date.setDate(e_date.getDate() + 2); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
+        e_date.setDate(e_date.getDate() + 1); // La fecha siempre inicia atrasada, entonces la tengo que arreglar
 
         while (s_date <= e_date) {
             var day = s_date.getDate();
@@ -293,6 +304,7 @@
 
         let aux;
         let sum;
+        total = 0;
         max_entry_id = ["No hay entradas", 0] // ID, val
         max_entry = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
         for (var date of dates) {
@@ -313,6 +325,7 @@
                 max_entry = [sum, date[0], date[1], date[2]];
             }
             if (aux) {
+                total = total + sum;
                 data.push(sum);
             }
             else {
@@ -320,7 +333,7 @@
             }
         }
         
-        return [data, max_entry, max_entry_id];
+        return [data, max_entry, max_entry_id, total];
     }
 
     function getOutlaysBetween(dates) {
@@ -336,6 +349,7 @@
 
         let aux;
         let sum;
+        total = 0;
         max_outlay_id = ["No hay salidas", 0] // ID, val
         max_outlay = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
         for (var date of dates) {
@@ -345,6 +359,7 @@
                 if (JSON.stringify(date) == JSON.stringify(outlay[0])) {
                     let out = outlay[1]
                     if(out >= max_outlay_id[1]){
+                        console.log(outlay[2].id); 
                         max_outlay_id[0] = outlay[2];
                         max_outlay_id[1] = out;
                     }
@@ -356,6 +371,7 @@
                 max_outlay = [sum, date[0], date[1], date[2]];
             }
             if (aux) {
+                total = total + sum;
                 data.push(sum);
             }
             else {
@@ -363,7 +379,7 @@
             }
         }
 
-        return [data, max_outlay, max_outlay_id];
+        return [data, max_outlay, max_outlay_id, total];
     }
 
     // Agregar un escucha al formulario para actualizar el gráfico cuando cambian las fechas

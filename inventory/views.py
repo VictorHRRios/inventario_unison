@@ -40,7 +40,7 @@ def budget_stats(request):
     form = DateRangeForm()
     outlays = []
     entrys = []
-    
+
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
@@ -54,7 +54,7 @@ def budget_stats(request):
             unit_price = order.item.unit_price
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
-        outlays.append([str(mov.date), float(cash), str(order.id)])
+        outlays.append([str(mov.date), float(cash), str(mov.id)])
 
     for mov in entrys_movements:
         cash = 0
@@ -62,14 +62,13 @@ def budget_stats(request):
             unit_price = order.item.unit_price
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
-        entrys.append([str(mov.date), float(cash), str(order.id)])
+        entrys.append([str(mov.date), float(cash), str(mov.id)])
         
     movements = {
         'outlays': json.dumps(outlays),
         'entrys': json.dumps(entrys)
     }
     return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats', 'form': form, 'movements': movements})
-
 
 @staff_member_required
 def product_stats(request):
