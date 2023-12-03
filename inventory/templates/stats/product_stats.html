@@ -97,15 +97,25 @@
           <select id="product" name="product"></select>
       </form>
   </body>
-  </html>
+</div>
+
+<div class="content-section">
+  <h1 id="item-name"></h1>
+  <h3 id="item-actual-stock"></h3>
+  <p id="item-status"></p> 
+  <p id="item-last-entry"></p>
+  <p id="item-last-outlay"></p>
 </div>
 
 <script>
-  const aux = {
-    Sin_producto: 0,
-    Producto1: 10,
-    Producto2: 5,
-  };
+  // Crear el diccionario con todos los elementos
+  const  items_list = JSON.parse('{{ data.items|safe|escapejs }}');
+  const inventory = {}
+  let n = 0
+  for(const item of items_list){
+    inventory[n] = item;
+    n = n + 1;
+  }
 
   // Funcion para llenar el dropdown con opciones basadas en el inventario
   function fillDropdown() {
@@ -113,18 +123,24 @@
     const dropdown = document.getElementById("product");
 
     // Se llena el dropdown
-    for (const producto in aux) {
-      const option = document.createElement("option");
-      option.value = producto;
-      option.text = producto;
+    for (var i in inventory) {
+      var option = document.createElement("option");
+      option.value = i;
+      option.text = inventory[i][0];
       dropdown.add(option);
     }
   }
 
   // Funcion para visualizar informacion dependiendo de la seleccion del dropdown
   function showInfo(){
-    const selection = document.getElementById("product");
-    console.log(selection.value);
+    const item = inventory[document.getElementById("product").value];
+    
+    document.getElementById("item-name").textContent = "Articulo: " + item[0];
+    document.getElementById("item-actual-stock").textContent = "SKU: " + item[1];
+    document.getElementById("item-status").textContent = "";
+    document.getElementById("item-last-entry").textContent = "";
+    document.getElementById("item-last-outlay").textContent = "";
+    
   }
 
   // Caso base para la primera vez que se abra la pagina

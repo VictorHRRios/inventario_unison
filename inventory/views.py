@@ -88,7 +88,14 @@ def budget_stats(request):
 
 @staff_member_required
 def product_stats(request):
-    return render(request, 'stats/product_stats.html', {'title': 'Product Stats'})
+    items = []
+    all_items = Item.objects.all()
+    for item in all_items:
+        items.append([item.name, float(item.sku)])
+    data = {
+        'items' : json.dumps(items),
+    }
+    return render(request, 'stats/product_stats.html', {'title': 'Product Stats', 'data' : data})
 
 
 @staff_member_required

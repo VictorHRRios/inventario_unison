@@ -168,7 +168,6 @@
 <script>
     // Generar informacion dinamica para los datos estadisticos
     const star_date = document.getElementById('informacion-container')
-    document.createElement("p").textContent = 5;
 
     // Obtener elementos del formulario y del gráfico
     const date_range_form = document.getElementById('date-range-form');
@@ -314,6 +313,7 @@
     function getEntrysBetween(dates) {
         var entrys_list = JSON.parse('{{ movements.entrys|safe|escapejs }}');
         data = []
+
         for (var entry of entrys_list) {
             var entry_date = (entry[0]).split("-")
             var day = parseInt(entry_date[2]);
