@@ -5,139 +5,266 @@
 {% block content %}
 
 <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
     }
+  }
 
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
+  .b-example-divider {
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  }
 
-    .b-example-divider {
-      width: 100%;
-      height: 3rem;
-      background-color: rgba(0, 0, 0, .1);
-      border: solid rgba(0, 0, 0, .15);
-      border-width: 1px 0;
-      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-    }
+  .b-example-vr {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+  }
 
-    .b-example-vr {
-      flex-shrink: 0;
-      width: 1.5rem;
-      height: 100vh;
-    }
+  .bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+  }
 
-    .bi {
-      vertical-align: -.125em;
-      fill: currentColor;
-    }
+  .nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+  }
 
-    .nav-scroller {
-      position: relative;
-      z-index: 2;
-      height: 2.75rem;
-      overflow-y: hidden;
-    }
+  .nav-scroller .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
 
-    .nav-scroller .nav {
-      display: flex;
-      flex-wrap: nowrap;
-      padding-bottom: 1rem;
-      margin-top: -1px;
-      overflow-x: auto;
-      text-align: center;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
-    }
+  .btn-bd-primary {
+    --bd-violet-bg: #712cf9;
+    --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
 
-    .btn-bd-primary {
-      --bd-violet-bg: #712cf9;
-      --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: var(--bs-white);
+    --bs-btn-bg: var(--bd-violet-bg);
+    --bs-btn-border-color: var(--bd-violet-bg);
+    --bs-btn-hover-color: var(--bs-white);
+    --bs-btn-hover-bg: #6528e0;
+    --bs-btn-hover-border-color: #6528e0;
+    --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+    --bs-btn-active-color: var(--bs-btn-hover-color);
+    --bs-btn-active-bg: #5a23c8;
+    --bs-btn-active-border-color: #5a23c8;
+  }
 
-      --bs-btn-font-weight: 600;
-      --bs-btn-color: var(--bs-white);
-      --bs-btn-bg: var(--bd-violet-bg);
-      --bs-btn-border-color: var(--bd-violet-bg);
-      --bs-btn-hover-color: var(--bs-white);
-      --bs-btn-hover-bg: #6528e0;
-      --bs-btn-hover-border-color: #6528e0;
-      --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-      --bs-btn-active-color: var(--bs-btn-hover-color);
-      --bs-btn-active-bg: #5a23c8;
-      --bs-btn-active-border-color: #5a23c8;
-    }
+  .bd-mode-toggle {
+    z-index: 1500;
+  }
 
-    .bd-mode-toggle {
-      z-index: 1500;
-    }
+  .bd-mode-toggle .dropdown-menu .active .bi {
+    display: block !important;
+  }
 
-    .bd-mode-toggle .dropdown-menu .active .bi {
-      display: block !important;
-    }
+  #product {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    border-width: 3px;
+    color: #333;
+    width: 200px;
+    outline: none;
+    transition: background-color 0.3s ease;
+  }
 
-    #product {
-      font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #fff;
-      border-width: 3px;
-      color: #333;
-      width: 200px;
-      outline: none;
-      transition: background-color 0.3s ease;
-    }
+  #product:hover {
+    border-color: #999;
+  }
 
-    #product:hover{
-      border-color: #999;
-    }
-
-    #product:focus {
-      border-color: rgb(66, 66, 66);
-      box-shadow: 0 0 5px rgba(66, 66, 66, 0.5);
-    } 
-
-  </style>
+  #product:focus {
+    border-color: rgb(66, 66, 66);
+    box-shadow: 0 0 5px rgba(66, 66, 66, 0.5);
+  }
+</style>
 
 <div class="content-section">
-  <h2 class="report-header">Reporte <span class="highlight">de los Articulos</span></h2>
+  <h1 class="report-header">Reporte <span class="highlight">de los Articulos</span></h1>
+  <hr><br>
+  <h2>Información General de los Articulos</h2>
+  <br>
+  <h3 id="total-items-number"></h3>
   <hr>
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Dropdown de Inventario</title>
-  </head>
-  <body>
-      <form id="product-selector">
-          <label for="product">Selecciona un producto:</label>
-          <select id="product" name="product"></select>
-      </form>
-  </body>
+  <h3>GRAFICA DE DONA PARA ILUSTRAR EXISTENCIAS</h3>
+  <canvas id="stock-inventory"></canvas>
+  <br>
+  <hr>
+  <br>
+  <h3>GRAFICA DE BARRAS PARA ILUSTRAR CATEGORIAS</h3>
+  <canvas id="stock-categorys"></canvas>
+
 </div>
 
 <div class="content-section">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown de Inventario</title>
+  </head>
+
+  <body>
+    <form id="product-selector">
+      <label for="product">Selecciona un producto:</label>
+      <select id="product" name="product"></select>
+    </form>
+  </body>
+  <hr>
   <h1 id="item-name"></h1>
   <h3 id="item-actual-stock"></h3>
-  <p id="item-status"></p> 
+  <p id="item-status"></p>
   <p id="item-last-entry"></p>
   <p id="item-last-outlay"></p>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
   // Crear el diccionario con todos los elementos
-  const  items_list = JSON.parse('{{ data.items|safe|escapejs }}');
+
+  const items_list = JSON.parse('{{ data.items|safe|escapejs }}');
   const inventory = {}
   let n = 0
-  for(const item of items_list){
+  let null_stock = 0
+  let low_stock = 0
+  let normal_stock = 0
+  let cleaning_items = 0
+  let plumbing_items = 0
+  let electricity_items = 0
+  let stationery_items = 0
+  // Item = Nombre, sku, categoria, stock, threshold, unison
+  for (const item of items_list) {
     inventory[n] = item;
+
+    // Porcentjaes de stock referente a su existencia
+    let item_stock = item[3]
+    if (item_stock == 0) {
+      null_stock = null_stock + 1;
+    }
+    else {
+      if (item_stock <= item[4]) {
+        low_stock = low_stock + 1;
+      }
+      else {
+        normal_stock = normal_stock + 1;
+      }
+    }
+
+    // Cantidad de categorias
+    let item_category = item[2]
+    if (item_category == 'limpieza') { cleaning_items = cleaning_items + 1; }
+    if (item_category == 'plomeria') { plumbing_items = plumbing_items + 1; }
+    if (item_category == 'electricidad') { electricity_items = electricity_items + 1; }
+    if (item_category == 'papeleria') { stationery_items = stationery_items + 1; }
+
     n = n + 1;
+  }
+
+  // Obtener el stock total
+  document.getElementById("total-items-number").textContent = "Cantidad de articulos en el inventario: " + items_list.length;
+
+  // Crear grafica de porcentajes respecto a el stock
+  new Chart(document.getElementById("stock-inventory"), {
+    type: 'doughnut',
+    data: {
+      labels: ['Sin existencias', 'Bajas existencias', 'Suficientes existencias'],
+      datasets: [{
+        data: [null_stock, low_stock, normal_stock],
+        backgroundColor: [
+          'rgba(217, 83, 79, 1)',   // Rojo
+          'rgba(255, 221, 51, 1)',  // Amarillo
+          'rgba(92, 184, 92, 1)',   // Verde
+        ],
+      }]
+    },
+    options: {
+      responsive: true,
+      aspectRatio: 1,
+      plugins: {
+        legend: {
+          labels: {
+            font: {
+              size: 20
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Crear grafica de barras respecto a las categorias del stock
+  new Chart(document.getElementById("stock-categorys"), {
+    type: 'bar',
+    data: {
+      labels: ['Limpieza', 'Plomeria', 'Electricidad', 'Papeleria'],
+      datasets: [{
+        label: '',
+        data: [cleaning_items, plumbing_items, electricity_items, stationery_items],
+        backgroundColor: [
+          'rgba(217, 83, 79, 1)',    // Rojo - Representa limpieza
+          'rgba(255, 221, 51, 1)',   // Amarillo - Representa plomería
+          'rgba(92, 184, 92, 1)',    // Verde - Representa electricidad
+          'rgba(253, 184, 92, 1)',   // Naranja - Representa papelería
+        ],
+      }]
+    },
+    options: {
+      scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Categoria'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Cantidad de articulos'
+            }
+          }
+        },
+      responsive: true,
+      aspectRatio: 1,
+      plugins: {
+        legend: {
+          labels: {
+            font: {
+              size: 20
+            }
+          }
+        }
+      }
+    }
+  });
+
+  var stock_data = {
+    labels: ['']
   }
 
   // Funcion para llenar el dropdown con opciones basadas en el inventario
@@ -155,15 +282,14 @@
   }
 
   // Funcion para visualizar informacion dependiendo de la seleccion del dropdown
-  function showInfo(){
+  function showInfo() {
     const item = inventory[document.getElementById("product").value];
-    
+
     document.getElementById("item-name").textContent = "Articulo: " + item[0];
     document.getElementById("item-actual-stock").textContent = "SKU: " + item[1];
     document.getElementById("item-status").textContent = "";
     document.getElementById("item-last-entry").textContent = "";
     document.getElementById("item-last-outlay").textContent = "";
-    
   }
 
   // Caso base para la primera vez que se abra la pagina

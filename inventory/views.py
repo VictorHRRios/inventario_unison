@@ -91,7 +91,12 @@ def product_stats(request):
     items = []
     all_items = Item.objects.all()
     for item in all_items:
-        items.append([item.name, float(item.sku)])
+        items.append([item.name, 
+                      float(item.sku), 
+                      item.category, 
+                      item.stock, 
+                      item.low_stock_threshold, 
+                      item.unison])
     data = {
         'items' : json.dumps(items),
     }

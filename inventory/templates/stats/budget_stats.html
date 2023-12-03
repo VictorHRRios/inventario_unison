@@ -199,8 +199,8 @@
         const end_date = document.getElementById('id_end_date').value;
 
         // Actualizar los intervalos de tiempo
-        var str_start_date = (start_date == "") ? "00-00-00" : formatDate(start_date);
-        var str_end_date = (end_date == "") ? "00-00-00" : formatDate(end_date);
+        var str_start_date = (start_date == "") ? "??-??-????" : formatDate(start_date);
+        var str_end_date = (end_date == "") ? "??-??-????" : formatDate(end_date);
         
         document.getElementById("time-interval-a").textContent = "Durante el periodo de: " + str_start_date + " - " + str_end_date;
         document.getElementById("time-interval-b").textContent = "Durante el periodo de: " + str_start_date + " - " + str_end_date;
@@ -258,6 +258,21 @@
                 ]
             },
             options: {
+              scales: {
+                        x: {
+                          title: {
+                            display: true,
+                            text: 'Dia, mes y año'
+                          }
+                        },
+                        y: {
+                          title: {
+                            display: true,
+                            text: 'Dinero (en pesos)'
+                          }
+                        }
+                      },
+                responsive: true,
                 plugins: {
                     legend: {
                         labels: {
@@ -326,7 +341,7 @@
         let sum;
         total = 0;
         max_entry_id = ["No hay entradas", 0] // ID, val
-        max_entry = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
+        max_entry = [0, "??", "??", "????"] // val, año, mes, dia
         for (var date of dates) {
             aux = false;
             sum = 0;
@@ -371,7 +386,7 @@
         let sum;
         total = 0;
         max_outlay_id = ["No hay salidas", 0] // ID, val
-        max_outlay = [0, "dd", "mm", "aaaa"] // val, año, mes, dia
+        max_outlay = [0, "??", "??", "????"] // val, año, mes, dia
         for (var date of dates) {
             aux = false;
             sum = 0;
