@@ -42,7 +42,7 @@ class Item(models.Model):
 
     name = models.CharField(max_length=255)
     image = models.ImageField(default='default_item.jpg', upload_to='item_pics')
-    sku = models.DecimalField(max_digits=10, decimal_places=0)
+    sku = models.DecimalField(max_digits=10, decimal_places=0, unique=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     description = models.TextField()
     unit_type = models.CharField(max_length=20, choices=UNIT_CHOICES)

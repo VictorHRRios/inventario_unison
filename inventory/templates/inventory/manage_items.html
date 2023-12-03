@@ -1,78 +1,158 @@
 {% extends "base.html" %}
 {% block content %}
-        <div class="content-section">
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Estado</th>
-            <th scope="col">Balance</th>
-            <th scope="col">Categoría</th>
-            <th scope="col">Cantidad minima</th>
-            <th scope="col">Tipo de Unidad</th>
-            <th scope="col">Costo unitario</th>
-            <th scope="col">Acción</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in items %}
-            <tr>
-                <th scope="row">
-                    <a href="{% url 'display_item' item.id %}">{{ item.name }}</a>
-                </th>
+        <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet'
+          type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet'
+          type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
 
-                {% if item.stock == 0 %}
-                    <td class="table-danger">Inexistencia</td>
-                {% else %}
-                    {% if item.stock <= item.low_stock_threshold %}
-                        <td class="table-warning">Peligro de inexistencia</td>
-                    {% else %}
-                        <td class="table-success">En existencia</td>
-                    {% endif %}
-                {% endif %}
-                <td> {{ item.stock }}</td>
-                <td> {{ item.category }}</td>
-                <td> {{ item.low_stock_threshold }}</td>
-                <td> {{ item.unit_type }}</td>
-                <td> {{ item.unit_price }}</td>
-                <td>
+    <style>
 
-                    <div class="form-group">
-                        <div class="btn-group" role="group">
-                            <form method="get" action="{% url 'update_item' item.id %}">
-                                <button class="btn btn-outline-primary" type="submit">Actualizar</button>
-                            </form>
-                            <form method="get" action="{% url 'delete_item' item.id %}">
-                                <button class="btn btn-outline-danger" onclick="return confirmDelete();" type="submit">
-                                    Eliminar
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                </td>
-
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div class="form-group">
-        <div class="btn-group" role="group">
-            <form method="get" action="{% url 'create_item' %}">
-                <button class="btn btn-outline-success" type="submit">Crear Item</button>
-            </form>
-            <form method="get" action="{% url 'add_stock' %}">
-                <button class="btn btn-outline-success" type="submit">
-                    Agregar Stock
-                </button>
-            </form>
-        </div>
-    </div>
-    <script>
-        function confirmDelete() {
-            return confirm("Estas seguro que quieres eliminar este item?");
+        .styled-select {
+            position: relative;
+            display: inline-block;
+            width: 150px; /* Ajusta el ancho según tu preferencia */
+            margin-bottom: 10px; /* Espaciado opcional entre elementos */
         }
-    </script>
+
+        .styled-select select {
+            appearance: none; /* Oculta el estilo predeterminado del navegador */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        /* Estilo cuando se pasa el cursor sobre el menú desplegable */
+        .styled-select select:hover {
+            border-color: #999;
+        }
+
+        /* Estilo para las opciones del menú desplegable */
+        .styled-select select option {
+            padding: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Estilo cuando se selecciona una opción del menú desplegable */
+        .styled-select select option:checked {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+
+    </style>
+    <div class="content-section">
+            <form method="GET" action="">
+            <div class="styled-select">
+                <select name="category" id="category">
+                    <option value="" {% if not selected_category %} selected {% endif %}>Todos</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if category == selected_category %}
+                                selected {% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="btn btn-secondary" type="submit" value="Filter">Filtrar</button>
+        </form>
+        <br>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Categoría</th>
+                <th scope="col">Cantidad minima</th>
+                <th scope="col">Tipo de Unidad</th>
+                <th scope="col">Costo unitario</th>
+                <th scope="col">Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in items %}
+                <tr>
+                    <th scope="row">
+                        <a href="{% url 'display_item' item.id %}">{{ item.name }}</a>
+                    </th>
+
+                    {% if item.stock == 0 %}
+                        <td class="table-danger">Inexistencia</td>
+                    {% else %}
+                        {% if item.stock <= item.low_stock_threshold %}
+                            <td class="table-warning">Peligro de inexistencia</td>
+                        {% else %}
+                            <td class="table-success">En existencia</td>
+                        {% endif %}
+                    {% endif %}
+                    <td> {{ item.stock }}</td>
+                    <td> {{ item.category }}</td>
+                    <td> {{ item.low_stock_threshold }}</td>
+                    <td> {{ item.unit_type }}</td>
+                    <td> {{ item.unit_price }}</td>
+                    <td>
+
+                        <div class="form-group">
+                            <div class="btn-group" role="group">
+                                <form method="get" action="{% url 'update_item' item.id %}">
+                                    <button class="btn btn-outline-primary" type="submit">Actualizar</button>
+                                </form>
+                                <form method="get" action="{% url 'delete_item' item.id %}">
+                                    <button class="btn btn-outline-danger" onclick="return confirmDelete();"
+                                            type="submit">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="form-group">
+            <div class="btn-group" role="group">
+                <form method="get" action="{% url 'create_item' %}">
+                    <button class="btn btn-outline-success" type="submit">Crear Item</button>
+                </form>
+                <form method="get" action="{% url 'add_stock' %}">
+                    <button class="btn btn-outline-success" type="submit">
+                        Agregar Stock
+                    </button>
+                </form>
+            </div>
         </div>
+        <script>
+            function confirmDelete() {
+                return confirm("Estas seguro que quieres eliminar este item?");
+            }
+        </script>
+    </div>
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if items.has_previous %}
+            <a href="?page=1">&laquo; Primera</a>
+            <a href="?page={{ items.previous_page_number }}">Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ items.number }} de {{ items.paginator.num_pages }}
+        </span>
+
+        {% if items.has_next %}
+            <a href="?page={{ items.next_page_number }}">Siguiente</a>
+            <a href="?page={{ items.paginator.num_pages }}">Última &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
 {% endblock content %}

@@ -3,23 +3,36 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Item, ShoppingCart, Report, Order, User
-from .forms import ItemCreateForm, ItemAddForm, DateRangeForm
+from .forms import ItemCreateForm, DateRangeForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 
 
 @login_required
 def home(request):
-    item = Item.objects.all()
-    categories = item.values_list('category', flat=True).distinct()
+    items = Item.objects.all()
+    categories = items.values_list('category', flat=True).distinct()
 
     selected_category = request.GET.get('category')
 
     if selected_category:
-        item = item.filter(category=selected_category)
+        items = items.filter(category=selected_category)
+
+    items_per_page = 12
+
+    paginator = Paginator(items, items_per_page)
+    page = request.GET.get('page')
+
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
 
     context = {
         'title': 'Order Item',
-        'item': item,
+        'items': items,
         'categories' : categories,
         'selected_category' : selected_category,
     }
@@ -40,7 +53,7 @@ def budget_stats(request):
     form = DateRangeForm()
     outlays = []
     entrys = []
-    
+
     if form.is_valid():
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
@@ -63,7 +76,7 @@ def budget_stats(request):
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
         entrys.append([str(mov.date), float(cash), str(order.id)])
-        
+
     movements = {
         'outlays': json.dumps(outlays),
         'entrys': json.dumps(entrys)
@@ -131,7 +144,33 @@ def remove_item(request, item_id):
 @staff_member_required
 def manage_items(request):
     items = Item.objects.all()
-    return render(request, 'inventory/manage_items.html', {'items': items})
+
+    categories = items.values_list('category', flat=True).distinct()
+
+    selected_category = request.GET.get('category')
+
+    if selected_category:
+        items = items.filter(category=selected_category)
+
+    items_per_page = 12
+
+    paginator = Paginator(items, items_per_page)
+    page = request.GET.get('page')
+
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+
+    context = {
+        'title': 'Gestion de articulos',
+        'items': items,
+        'categories' : categories,
+        'selected_category' : selected_category,
+    }
+    return render(request, 'inventory/manage_items.html', context)
 
 
 @staff_member_required
