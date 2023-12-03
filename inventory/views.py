@@ -18,6 +18,7 @@ def home(request):
     if selected_category:
         items = items.filter(category=selected_category)
 
+    items = items.filter(stock__gt=0)
     items = items.order_by('name')
 
     items_per_page = 12
