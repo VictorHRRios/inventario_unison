@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-        <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet'
+    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet'
           type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet'
           type='text/css'>
@@ -50,7 +50,7 @@
 
     </style>
     <div class="content-section">
-            <form method="GET" action="">
+        <form method="GET" action="">
             <div class="styled-select">
                 <select name="category" id="category">
                     <option value="" {% if not selected_category %} selected {% endif %}>Todos</option>
@@ -66,13 +66,11 @@
         <table class="table table-striped">
             <thead>
             <tr>
+                <th scope="col">SKU</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Estado</th>
                 <th scope="col">Balance</th>
                 <th scope="col">Categoría</th>
-                <th scope="col">Cantidad minima</th>
-                <th scope="col">Tipo de Unidad</th>
-                <th scope="col">Costo unitario</th>
                 <th scope="col">Acción</th>
             </tr>
             </thead>
@@ -80,8 +78,11 @@
             {% for item in items %}
                 <tr>
                     <th scope="row">
-                        <a href="{% url 'display_item' item.id %}">{{ item.name }}</a>
+                        {{ item.sku }}
                     </th>
+                    <td>
+                        <a href="{% url 'display_item' item.id %}">{{ item.name }}</a>
+                    </td>
 
                     {% if item.stock == 0 %}
                         <td class="table-danger">Inexistencia</td>
@@ -94,9 +95,6 @@
                     {% endif %}
                     <td> {{ item.stock }}</td>
                     <td> {{ item.category }}</td>
-                    <td> {{ item.low_stock_threshold }}</td>
-                    <td> {{ item.unit_type }}</td>
-                    <td> {{ item.unit_price }}</td>
                     <td>
 
                         <div class="form-group">
