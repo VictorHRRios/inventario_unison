@@ -10,7 +10,7 @@ import json
 
 @login_required
 def home(request):
-    items = Item.objects.all()
+    items = Item.objects.all().order_by('name')
     categories = items.values_list('category', flat=True).distinct()
 
     selected_category = request.GET.get('category')
@@ -143,7 +143,7 @@ def remove_item(request, item_id):
 
 @staff_member_required
 def manage_items(request):
-    items = Item.objects.all()
+    items = Item.objects.all().order_by('name')
 
     categories = items.values_list('category', flat=True).distinct()
 
