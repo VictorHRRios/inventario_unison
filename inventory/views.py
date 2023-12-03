@@ -10,13 +10,15 @@ import json
 
 @login_required
 def home(request):
-    items = Item.objects.all().order_by('name')
+    items = Item.objects.all()
     categories = items.values_list('category', flat=True).distinct()
 
     selected_category = request.GET.get('category')
 
     if selected_category:
         items = items.filter(category=selected_category)
+
+    items = items.order_by('name')
 
     items_per_page = 12
 
@@ -33,8 +35,8 @@ def home(request):
     context = {
         'title': 'Order Item',
         'items': items,
-        'categories' : categories,
-        'selected_category' : selected_category,
+        'categories': categories,
+        'selected_category': selected_category,
     }
     return render(request, 'inventory/request_item.html', context)
 
@@ -76,12 +78,13 @@ def budget_stats(request):
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
         entrys.append([str(mov.date), float(cash), str(mov.id)])
-        
+
     movements = {
         'outlays': json.dumps(outlays),
         'entrys': json.dumps(entrys)
     }
     return render(request, 'stats/budget_stats.html', {'title': 'Budget Stats', 'form': form, 'movements': movements})
+
 
 @staff_member_required
 def product_stats(request):
@@ -142,7 +145,7 @@ def remove_item(request, item_id):
 
 @staff_member_required
 def manage_items(request):
-    items = Item.objects.all().order_by('name')
+    items = Item.objects.all()
 
     categories = items.values_list('category', flat=True).distinct()
 
@@ -150,7 +153,7 @@ def manage_items(request):
 
     if selected_category:
         items = items.filter(category=selected_category)
-
+    items = items.order_by('name')
     items_per_page = 12
 
     paginator = Paginator(items, items_per_page)
@@ -166,8 +169,8 @@ def manage_items(request):
     context = {
         'title': 'Gestion de articulos',
         'items': items,
-        'categories' : categories,
-        'selected_category' : selected_category,
+        'categories': categories,
+        'selected_category': selected_category,
     }
     return render(request, 'inventory/manage_items.html', context)
 
@@ -241,17 +244,17 @@ def save_cart(request):
 
 @staff_member_required
 def add_stock(request):
-    item = Item.objects.all()
+    items = Item.objects.all()
 
-    categories = item.values_list('category', flat=True).distinct()
+    categories = items.values_list('category', flat=True).distinct()
 
     form = ItemAddForm()
 
     selected_category = request.GET.get('category')
 
     if selected_category:
-        item = item.filter(category=selected_category)
-
+        items = items.filter(category=selected_category)
+    items = items.order_by('name')
     temp_user, created = User.objects.get_or_create(
         username="ADMIN",
         is_staff=True
@@ -259,11 +262,11 @@ def add_stock(request):
     cart_items = ShoppingCart.objects.filter(user=temp_user.id)
     context = {
         'title': 'Order Item',
-        'item': item,
+        'items': items,
         'cart_items': cart_items,
-        'categories' : categories,
-        'selected_category' : selected_category,
-        'form' : form
+        'categories': categories,
+        'selected_category': selected_category,
+        'form': form
     }
     return render(request, 'inventory/add_stock.html', context)
 
