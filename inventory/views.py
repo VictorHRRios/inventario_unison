@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Item, ShoppingCart, Report, Order, User
-from .forms import ItemCreateForm, DateRangeForm
+from .forms import ItemCreateForm, DateRangeForm, ItemAddForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 
@@ -245,6 +245,8 @@ def add_stock(request):
 
     categories = item.values_list('category', flat=True).distinct()
 
+    form = ItemAddForm()
+
     selected_category = request.GET.get('category')
 
     if selected_category:
@@ -261,6 +263,7 @@ def add_stock(request):
         'cart_items': cart_items,
         'categories' : categories,
         'selected_category' : selected_category,
+        'form' : form
     }
     return render(request, 'inventory/add_stock.html', context)
 
@@ -268,16 +271,21 @@ def add_stock(request):
 @staff_member_required
 def add_to_stock(request, item_id):
     item = Item.objects.get(id=item_id)
-    quantity = request.POST.get('quantity')
-    temp_user = User.objects.get(username="ADMIN")
-    cart_item, created = ShoppingCart.objects.get_or_create(
-        item=item,
-        user=temp_user,
-        defaults={'quantity': int(quantity)}
-    )
-    if not created:
-        cart_item.quantity += int(quantity)
-        cart_item.save()
+    form = ItemAddForm(request.POST)
+    if form.is_valid():
+        quantity = form.cleaned_data['addition']
+        temp_user = User.objects.get(username="ADMIN")
+        cart_item, created = ShoppingCart.objects.get_or_create(
+            item=item,
+            user=temp_user,
+            defaults={'quantity': int(quantity)}
+        )
+        if not created:
+            cart_item.quantity += int(quantity)
+            cart_item.save()
+        return redirect('add_stock')
+    else:
+        messages.warning(request, f'Hubo un error al agregar al carrito.')
     return redirect('add_stock')
 
 
