@@ -22,101 +22,167 @@
     <style>
 
         .product-big-title-area {
-
             margin-bottom: 20px;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
-        .description {
-            font-size: 16px;
+        .single-shop-product form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        html img {
-            max-width: 100%;
-            width: 225px;
-            height: 225px;
-            border-radius: 25%;
-            margin-bottom: 10px;
+        .single-shop-product button {
+            width: 100%;
+        }
 
+        .single-shop-product .stock {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .single-shop-product .id {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .single-shop-product h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .single-shop-product img {
+            width: 100%;
+            height: 200px; /* Ajusta la altura deseada */
+            object-fit: cover; /* Opcional: para controlar cómo se ajusta la imagen dentro del tamaño especificado */
         }
 
         .single-shop-product {
-
-            background-color: rgb(255, 255, 255);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            border-radius: 25%;
-            margin-top: 1cm;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        .single-shop-product.hide {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+
+        @media (max-width: 767px) {
+            .single-shop-product {
+                margin-bottom: 20px;
+            }
+        }
+
+        .styled-select {
+    position: relative;
+    display: inline-block;
+    width: 150px; /* Ajusta el ancho según tu preferencia */
+    margin-bottom: 10px; /* Espaciado opcional entre elementos */
+}
+
+.styled-select select {
+    appearance: none; /* Oculta el estilo predeterminado del navegador */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* Estilo cuando se pasa el cursor sobre el menú desplegable */
+.styled-select select:hover {
+    border-color: #999;
+}
+
+/* Estilo para las opciones del menú desplegable */
+.styled-select select option {
+    padding: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Estilo cuando se selecciona una opción del menú desplegable */
+.styled-select select option:checked {
+    background-color: #007bff;
+    color: #fff;
+}
+
+
 
     </style>
 
     <body>
 
-    <div class="product-big-title-area">
-        <div class="container">
+        <div class="product-big-title-area">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="product-bit-title text-center">
-                        <h2>Solicitar Artículo</h2>
-                    </div>
+                    <div class="product-bit-title text-center" style="margin-top: 20px ;">
+                        <h2>Agregar stock</h2>
                 </div>
             </div>
         </div>
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Filtrar
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item text-center" href="#">En existencia</a>
-                <a class="dropdown-item text-center" href="#">Papelería</a>
-                <a class="dropdown-item text-center" href="#">Limpieza</a>
-                <a class="dropdown-item text-center" href="#">Plomería</a>
-                <a class="dropdown-item text-center" href="#">Electricidad</a>
+        <form method="GET" action="">
+            <div class="styled-select">
+                <select name="category" id="category">
+                    <option value="" {% if not selected_category %} selected {% endif %}>Todos</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if category == selected_category %} selected {% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        </div>
-    </div>
+            <button class="btn btn-secondary" type="submit" value="Filter">Filtrar</button>
+        </form>
+    <br>
 
     <div class="single-product-area">
-        <div class="zigzag-bottom"></div>
-        <div class="container">
-            <div class="row">
-                {% for items in item %}
-                    <div class="col-md-3 col-sm-6">
-                        <div class="single-shop-product text-center">
+        <div class="row">
+            {% for items in item %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="single-shop-product">
                             <div class="product-upper">
-                                <img src="{{ items.image.url }}"
-                                     alt="Imagen">
+                                <img src="{{ items.image.url }}" alt="Imagen">
                             </div>
-                            <h2><a style="color: black" href="{% url 'display_item' items.id %}">{{ items.name }}</a>
-                            </h2>
-                            <a class="description">Descripcion: {{ items.description }}</a>
-                            <br>
-                            <a class="stock">Disponibilidad: {{ items.stock }}</a>
-                            <br>
-                            <div class="container mt-5">
-                                <form method="post" action="{% url 'add_to_stock' items.id %}">
-                                    {% csrf_token %}
-                                    <select name="quantity" class="form-select form-select-sm"
-                                            aria-label="Small select example">
-                                        <option selected>1</option>
-                                        <option value=2>2</option>
-                                        <option value=3>3</option>
-                                        <option value=4>4</option>
-                                        <option value=5>5</option>
-                                        <option value=6>6</option>
-                                        <option value=7>7</option>
-                                        <option value=8>8</option>
-                                        <option value=9>9</option>
-                                        <option value=10>10</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-primary">Agregar stock</button>
-                                </form>
+                            <div class="product-details">
+                                <h2><a style="color: black" href="{% url 'display_item' items.id %}">{{ items.name }}</a></h2>
+                                <p class="id" 
+                                style="font-size: medium; font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">SKU: {{ items.sku }}</p>
+                                <p class="stock" 
+                                style="font-size: medium; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">Disponibilidad: {{ items.stock }}</p>
+                            <div class="mt-3">
+                                        <form method="post" action="{% url 'add_to_stock' items.id %}">
+                                            {% csrf_token %}
+                                            <select name="quantity" class="form-select form-select-sm mb-2"
+                                                    aria-label="Small select example" 
+                                                    style="margin-top: -10px; border-radius: 15%;">
+                                                <option selected>1</option>
+                                                <option value=2>2</option>
+                                                <option value=3>3</option>
+                                                <option value=4>4</option>
+                                                <option value=5>5</option>
+                                                <option value=6>6</option>
+                                                <option value=7>7</option>
+                                                <option value=8>8</option>
+                                                <option value=9>9</option>
+                                                <option value=10>10</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary">Agregar stock</button>
+                                        </form>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
     <div class="col-md-4">
