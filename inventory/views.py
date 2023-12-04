@@ -103,15 +103,21 @@ def product_stats(request):
     all_items = Item.objects.all()
     for item in all_items:
         # Obtencion de las oredenes
-        data_entrys_item = [["ID","Cantidad","Precio","Total"]]
-        data_outlays_item = [["ID","Cantidad","Precio","Total"]]
+        data_entrys_item = []
+        data_outlays_item = []
         item_orders = Order.objects.filter(item=item)
         for it in item_orders:
             report_of_item = it.report
             if(report_of_item.movement == 'entrada'):
-                data_entrys_item.append([report_of_item.id, float(it.quantity), float(it.price), float(it.quantity*it.price)])
+                data_entrys_item.append({'id' : report_of_item.id, 
+                                         'quantity' : float(it.quantity), 
+                                         'price' : float(it.price), 
+                                         'total' : float(it.quantity*it.price)})
             else:
-                data_outlays_item.append([report_of_item.id, float(it.quantity), float(it.price), float(it.quantity*it.price)])
+                data_outlays_item.append({'id' : report_of_item.id, 
+                                         'quantity' : float(it.quantity), 
+                                         'price' : float(it.price), 
+                                         'total' : float(it.quantity*it.price)})
 
         items.append([item.name,
                       float(item.sku),
