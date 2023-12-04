@@ -64,13 +64,13 @@ class Item(models.Model):
 
 
 class Order(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"[{self.report}] {self.item.name} : {self.quantity}"
+        return f"[{self.report}]: {self.quantity}"
 
 
 class ShoppingCart(models.Model):
