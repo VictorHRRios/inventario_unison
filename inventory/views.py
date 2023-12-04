@@ -6,7 +6,10 @@ from .models import Item, ShoppingCart, Report, Order, User
 from .forms import ItemCreateForm, DateRangeForm, ItemAddForm, SearchForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
+from datetime import datetime
+import pytz
 
+ARIZNA_TMEZONE = pytz.timezone('America/Phoenix')
 
 @login_required
 def home(request):
@@ -80,7 +83,9 @@ def budget_stats(request):
                 unit_price = order.price
                 quantity = order.quantity
                 cash = cash + (unit_price * quantity)
-        outlays.append([str(mov.date), float(cash), str(mov.id)])
+        unformat_date = mov.date
+        format_date = unformat_date.astimezone(ARIZNA_TMEZONE)
+        outlays.append([str(format_date), float(cash), str(mov.id)])
 
     for mov in entrys_movements:
         cash = 0
@@ -88,7 +93,10 @@ def budget_stats(request):
             unit_price = order.price
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
-        entrys.append([str(mov.date), float(cash), str(mov.id)])
+        unformat_date = mov.date
+        format_date = unformat_date.astimezone(ARIZNA_TMEZONE)
+        print(format_date)
+        entrys.append([str(format_date), float(cash), str(mov.id)])
     
     movements = {
         'outlays': json.dumps(outlays),
