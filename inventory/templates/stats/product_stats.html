@@ -154,8 +154,11 @@
   <h5 id="item-actual-stock"></h5>
   <h5 id="item-status"></h5>
   <br>
-  <h5 id="item-last-entry"></h5>
-  <h5 id="item-last-outlay"></h5>
+  <h4>Tabla de entradas referentes al articulo</h4><br>
+  <h5 id="item-entrys"></h5>
+  <br>
+  <h4>Tabla de salidas referentes al articulo</h4><br>
+  <h5 id="item-outlays"></h5>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -307,7 +310,7 @@
   // Funcion para visualizar informacion dependiendo de la seleccion del dropdown
   function showInfo() {
     const item = inventory[document.getElementById("product").value];
-    // Item = Nombre, sku, categoria, stock, threshold, unison, last_entry, last_outlay
+    // Item = Nombre, sku, categoria, stock, threshold, unison, dataset_entrys, dataset_entrys
     document.getElementById("item-name").textContent = "Articulo: " + item[0];
     document.getElementById("item-sku").textContent = "SKU: " + item[1];
     document.getElementById("item-actual-stock").textContent = "Existencia actual: " + item[3] + " unidades.";
@@ -325,8 +328,54 @@
       }
     }
     document.getElementById("item-status").textContent = "Estado: " + item_status + ".";
-    document.getElementById("item-last-entry").textContent = "ID de la última entrada del articulo: " + item[6];
-    document.getElementById("item-last-outlay").textContent = "ID de la última salida del articulo: " + item[7];
+
+    
+    // Crear una matriz de datos para las tablas
+    var item_data_entrys = item[6];
+    var item_data_outlays = item[7];
+    
+    // Crear una tabla
+    var item_table_entrys = document.createElement("table-entrys");
+    var item_table_outlays = document.createElement("table-outlays");
+
+    console.log(item_data_entrys);
+    console.log(item_data_entrys);
+
+    // Iterar sobre los datos y crear filas y celdas
+    for (var i = 0; i < item_data_entrys.length; i++) {
+        var row = document.createElement("tr"); // Crear fila
+
+        for (var j = 0; j < item_data_entrys[i].length; j++) {
+            var cell = document.createElement("td"); // Crear celda
+            cell.textContent = item_data_entrys[i][j]; // Establecer el contenido de la celda
+            row.appendChild(cell); // Agregar la celda a la fila
+        }
+
+        item_table_entrys.appendChild(row); // Agregar la fila a la tabla
+    }
+    
+    // Iterar sobre los datos y crear filas y celdas
+    for (var i = 0; i < item_data_outlays.length; i++) {
+        var row = document.createElement("tr"); // Crear fila
+
+        for (var j = 0; j < item_data_outlays[i].length; j++) {
+            var cell = document.createElement("td"); // Crear celda
+            cell.textContent = item_data_outlays[i][j]; // Establecer el contenido de la celda
+            row.appendChild(cell); // Agregar la celda a la fila
+        }
+
+        item_table_outlays.appendChild(row); // Agregar la fila a la tabla
+    }
+
+    var aux_entrys = document.getElementById("item-entrys")
+    aux_entrys.innterHTML = "";
+
+    var aux_outlays =document.getElementById("item-outlays")
+    aux_outlays.innterHTML = "";
+    
+    // Agregar las tablas al cuerpo del documento
+    aux_entrys.appendChild(item_table_entrys);
+    aux_outlays.appendChild(item_table_outlays);
   }
 
   // Caso base para la primera vez que se abra la pagina

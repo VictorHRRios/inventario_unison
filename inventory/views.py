@@ -89,7 +89,7 @@ def budget_stats(request):
             quantity = order.quantity
             cash = cash + (unit_price * quantity)
         entrys.append([str(mov.date), float(cash), str(mov.id)])
-
+    
     movements = {
         'outlays': json.dumps(outlays),
         'entrys': json.dumps(entrys)
@@ -102,19 +102,16 @@ def product_stats(request):
     items = []
     all_items = Item.objects.all()
     for item in all_items:
-        # Obtencion de las ultimas ordenes
+        # Obtencion de las oredenes
+        data_entrys_item = [["ID","Cantidad","Precio","Total"]]
+        data_outlays_item = [["ID","Cantidad","Precio","Total"]]
         item_orders = Order.objects.filter(item=item)
-        item_reports = Report.objects.filter(order__in=item_orders).order_by('-date')
-        last_entry_item_report = item_reports.filter(movement='entrada').first()
-        last_outlay_item_report = item_reports.filter(movement='salida').first()
-        if (last_entry_item_report is None):
-            last_entry_id = "No existe ninguna orden de entrada relacionada a este articulo."
-        else:
-            last_entry_id = last_entry_item_report.id
-        if (last_outlay_item_report is None):
-            last_outlay_id = "No existe ninguna orden de salida relacionada a este articulo."
-        else:
-            last_outlay_id = last_outlay_item_report.id
+        for it in item_orders:
+            report_of_item = it.report
+            if(report_of_item.movement == 'entrada'):
+                data_entrys_item.append([report_of_item.id, float(it.quantity), float(it.price), float(it.quantity*it.price)])
+            else:
+                data_outlays_item.append([report_of_item.id, float(it.quantity), float(it.price), float(it.quantity*it.price)])
 
         items.append([item.name,
                       float(item.sku),
@@ -122,8 +119,8 @@ def product_stats(request):
                       item.stock,
                       item.low_stock_threshold,
                       item.unison,
-                      last_entry_id,
-                      last_outlay_id,
+                      data_entrys_item,
+                      data_outlays_item,
                       ])
 
     data = {
