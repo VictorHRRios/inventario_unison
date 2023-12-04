@@ -102,16 +102,36 @@ def product_stats(request):
     items = []
     all_items = Item.objects.all()
     for item in all_items:
-        items.append([item.name,
-                      float(item.sku),
-                      item.category,
-                      item.stock,
+        # Obtencion de las ultimas ordenes
+        item_orders = Order.objects.filter(item=item)
+        item_reports = Report.objects.filter(order__in=item_orders).order_by('date')
+        last_entry_item_report = item_reports.filter(movement='entrada').first()
+        last_outlay_item_report = item_reports.filter(movement='salida').first()
+        if(last_entry_item_report is None):
+            last_entry_id = "No existe ninguna orden de entrada relacionada a este articulo"
+        else:
+            last_entry_id = last_entry_item_report.id
+        if(last_outlay_item_report is None):
+            last_outlay_id = "No existe ninguna orden de salida relacionada a este articulo"
+        else:
+            last_outlay_id = last_outlay_item_report.id
+        
+        items.append([item.name, 
+                      float(item.sku), 
+                      item.category, 
+                      item.stock, 
                       item.low_stock_threshold,
-                      item.unison])
+                      item.unison,
+                      last_entry_id,
+                      last_outlay_id,
+                      ])
+        print("LISTA TERMINADA")
+        
+
     data = {
-        'items': json.dumps(items),
+        'items' : json.dumps(items),
     }
-    return render(request, 'stats/product_stats.html', {'title': 'Product Stats', 'data': data})
+    return render(request, 'stats/product_stats.html', {'title': 'Product Stats', 'data' : data})
 
 
 @staff_member_required

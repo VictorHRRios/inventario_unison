@@ -138,10 +138,13 @@
   </body>
   <hr>
   <h1 id="item-name"></h1>
-  <h3 id="item-actual-stock"></h3>
-  <p id="item-status"></p>
-  <p id="item-last-entry"></p>
-  <p id="item-last-outlay"></p>
+  <h3 id="item-sku"></h3>
+  <hr>
+  <h5 id="item-actual-stock"></h5>
+  <h5 id="item-status"></h5>
+  <br>
+  <h5 id="item-last-entry"></h5>
+  <h5 id="item-last-outlay"></h5>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -158,7 +161,7 @@
   let plumbing_items = 0
   let electricity_items = 0
   let stationery_items = 0
-  // Item = Nombre, sku, categoria, stock, threshold, unison
+  // Item = Nombre, sku, categoria, stock, threshold, unison, last_entry, last_outlay
   for (const item of items_list) {
     inventory[n] = item;
 
@@ -284,12 +287,26 @@
   // Funcion para visualizar informacion dependiendo de la seleccion del dropdown
   function showInfo() {
     const item = inventory[document.getElementById("product").value];
-
+    // Item = Nombre, sku, categoria, stock, threshold, unison, last_entry, last_outlay
     document.getElementById("item-name").textContent = "Articulo: " + item[0];
-    document.getElementById("item-actual-stock").textContent = "SKU: " + item[1];
-    document.getElementById("item-status").textContent = "";
-    document.getElementById("item-last-entry").textContent = "";
-    document.getElementById("item-last-outlay").textContent = "";
+    document.getElementById("item-sku").textContent = "SKU: " + item[1];
+    document.getElementById("item-actual-stock").textContent = "Existencia actual: " + item[3] + " unidades";
+    let item_status
+    let item_stock = item[3]
+    if(item_stock == 0){
+      item_status = "Sin existencias, es necesario reabastecer."
+    }
+    else{
+      if(item_stock <= item[4]){
+        item_status = "Baja existencias, se recomienda reabastecer pronto."
+      }
+      else{
+        item_status = "Suficientes existencias, no es necesario reabastecer."
+      }
+    }
+    document.getElementById("item-status").textContent = "Estado: " + item_status;
+    document.getElementById("item-last-entry").textContent = "ID de la última entrada del articulo: " + item[6];
+    document.getElementById("item-last-outlay").textContent = "ID de la última salida del articulo: " + item[7];
   }
 
   // Caso base para la primera vez que se abra la pagina
