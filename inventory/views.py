@@ -104,7 +104,7 @@ def product_stats(request):
     for item in all_items:
         # Obtencion de las ultimas ordenes
         item_orders = Order.objects.filter(item=item)
-        item_reports = Report.objects.filter(order__in=item_orders).order_by('date')
+        item_reports = Report.objects.filter(order__in=item_orders).order_by('-date')
         last_entry_item_report = item_reports.filter(movement='entrada').first()
         last_outlay_item_report = item_reports.filter(movement='salida').first()
         if(last_entry_item_report is None):
@@ -190,6 +190,16 @@ def manage_items(request):
 
     categories = items.values_list('category', flat=True).distinct()
 
+    form = SearchForm(request.GET)
+
+    if form.is_valid():
+        search_name = form.cleaned_data.get('search_query')
+        sku_id = form.cleaned_data.get('sku_id')
+        if search_name:
+            items = items.filter(name__icontains=search_name)
+        if sku_id:
+            items = items.filter(sku__exact=sku_id)
+
     selected_category = request.GET.get('category')
 
     if selected_category:
@@ -212,6 +222,7 @@ def manage_items(request):
         'items': items,
         'categories': categories,
         'selected_category': selected_category,
+        'form': form
     }
     return render(request, 'inventory/manage_items.html', context)
 
@@ -295,7 +306,21 @@ def add_stock(request):
 
     if selected_category:
         items = items.filter(category=selected_category)
+
     items = items.order_by('name')
+
+    items_per_page = 24
+
+    paginator = Paginator(items, items_per_page)
+    page = request.GET.get('page')
+
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+
     temp_user, created = User.objects.get_or_create(
         username="ADMIN",
         is_staff=True

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 {% block content %}
 
     <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet'
@@ -53,7 +55,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
         }
 
         .step-links a {
@@ -77,6 +79,22 @@
         }
 
     </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="product-bit-title text-center" style="margin-top: 20px ;">
+                <h2>Gestión de Inventario</h2>
+            </div>
+        </div>
+    </div>
+
+    <form method="get" action="{% url 'manage_items' %}">
+        {{ form|crispy }}
+        <button class="btn btn-secondary" type="submit" value="Search">Buscar</button>
+        <br>
+        <br>
+    </form>
+
     <div class="content-section">
         <form method="GET" action="">
             <div class="styled-select">
