@@ -77,7 +77,6 @@ def budget_stats(request):
     for mov in outlays_movements:
         cash = 0
         for order in Order.objects.filter(report_id=mov):
-            if order.item is not None:
                 unit_price = order.price
                 quantity = order.quantity
                 cash = cash + (unit_price * quantity)
