@@ -108,11 +108,11 @@ def product_stats(request):
         last_entry_item_report = item_reports.filter(movement='entrada').first()
         last_outlay_item_report = item_reports.filter(movement='salida').first()
         if(last_entry_item_report is None):
-            last_entry_id = "No existe ninguna orden de entrada relacionada a este articulo"
+            last_entry_id = "No existe ninguna orden de entrada relacionada a este articulo."
         else:
             last_entry_id = last_entry_item_report.id
         if(last_outlay_item_report is None):
-            last_outlay_id = "No existe ninguna orden de salida relacionada a este articulo"
+            last_outlay_id = "No existe ninguna orden de salida relacionada a este articulo."
         else:
             last_outlay_id = last_outlay_item_report.id
         
@@ -125,8 +125,6 @@ def product_stats(request):
                       last_entry_id,
                       last_outlay_id,
                       ])
-        print("LISTA TERMINADA")
-        
 
     data = {
         'items' : json.dumps(items),

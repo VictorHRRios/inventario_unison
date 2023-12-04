@@ -82,6 +82,13 @@
     display: block !important;
   }
 
+  .center {
+    text-align: center;
+    margin: auto;
+    width: 50%; /* Puedes ajustar el ancho según tus necesidades */
+    padding: 20px;
+  }
+
   #product {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     padding: 8px;
@@ -103,27 +110,31 @@
     border-color: rgb(66, 66, 66);
     box-shadow: 0 0 5px rgba(66, 66, 66, 0.5);
   }
+  
 </style>
 
 <div class="content-section">
-  <h1 class="report-header">Reporte <span class="highlight">de los Articulos</span></h1>
-  <hr><br>
-  <h2>Información General de los Articulos</h2>
-  <br>
-  <h3 id="total-items-number"></h3>
+  <h1 class="report-header">Reporte <span class="highlight">de los Artículos</span></h1>
   <hr>
-  <h3>GRAFICA DE DONA PARA ILUSTRAR EXISTENCIAS</h3>
-  <canvas id="stock-inventory"></canvas>
-  <br>
-  <hr>
-  <br>
-  <h3>GRAFICA DE BARRAS PARA ILUSTRAR CATEGORIAS</h3>
-  <canvas id="stock-categorys"></canvas>
-
+  <h2>Información General</h2>
+  <h4 id="total-items-number"></h4>
 </div>
 
 <div class="content-section">
+  <div class="center">
+    <h3>Distribución del Inventario por Existencias</h3>
+    <canvas id="stock-inventory"></canvas>
+  </div>
+</div>
 
+<div class="content-section">
+  <div class="center">
+    <h3>Distribución del Inventario por Categoría</h3>
+    <canvas id="stock-categorys"></canvas>
+  </div>
+</div>
+
+<div class="content-section">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -190,7 +201,7 @@
   }
 
   // Obtener el stock total
-  document.getElementById("total-items-number").textContent = "Cantidad de articulos en el inventario: " + items_list.length;
+  document.getElementById("total-items-number").textContent = "Cantidad de artículos registrados en el inventario: " + items_list.length;
 
   // Crear grafica de porcentajes respecto a el stock
   new Chart(document.getElementById("stock-inventory"), {
@@ -200,10 +211,16 @@
       datasets: [{
         data: [null_stock, low_stock, normal_stock],
         backgroundColor: [
-          'rgba(217, 83, 79, 1)',   // Rojo
-          'rgba(255, 221, 51, 1)',  // Amarillo
-          'rgba(92, 184, 92, 1)',   // Verde
+          'rgba(255, 99, 132, 0.2)',    // Rojo
+          'rgba(255, 205, 86, 0.2)',   // Amarillo
+          'rgba(75, 192, 192, 0.2)',    // Verde
         ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',    // Rojo
+          'rgba(255, 205, 86, 1)',   // Amarillo
+          'rgba(75, 192, 192, 1)',    // Verde
+        ],
+        borderWidth: 1
       }]
     },
     options: {
@@ -225,16 +242,23 @@
   new Chart(document.getElementById("stock-categorys"), {
     type: 'bar',
     data: {
-      labels: ['Limpieza', 'Plomeria', 'Electricidad', 'Papeleria'],
+      labels: ['Limpieza', 'Plomería', 'Electricidad', 'Papelería'],
       datasets: [{
-        label: '',
+        label: 'Distribución del Inventario por Categoría',
         data: [cleaning_items, plumbing_items, electricity_items, stationery_items],
         backgroundColor: [
-          'rgba(217, 83, 79, 1)',    // Rojo - Representa limpieza
-          'rgba(255, 221, 51, 1)',   // Amarillo - Representa plomería
-          'rgba(92, 184, 92, 1)',    // Verde - Representa electricidad
-          'rgba(253, 184, 92, 1)',   // Naranja - Representa papelería
+          'rgba(255, 99, 132, 0.2)',    // Rojo - Representa limpieza
+          'rgba(255, 205, 86, 0.2)',   // Amarillo - Representa plomería
+          'rgba(75, 192, 192, 0.2)',    // Verde - Representa electricidad
+          'rgba(255, 159, 64, 0.2)',   // Naranja - Representa papelería
         ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',    // Rojo - Representa limpieza
+          'rgba(255, 205, 86, 1)',   // Amarillo - Representa plomería
+          'rgba(75, 192, 192, 1)',    // Verde - Representa electricidad
+          'rgba(255, 159, 64, 1)',   // Naranja - Representa papelería
+        ],
+        borderWidth: 1,
       }]
     },
     options: {
@@ -266,10 +290,6 @@
     }
   });
 
-  var stock_data = {
-    labels: ['']
-  }
-
   // Funcion para llenar el dropdown con opciones basadas en el inventario
   function fillDropdown() {
     // Conectarse al texto dinamico
@@ -290,21 +310,21 @@
     // Item = Nombre, sku, categoria, stock, threshold, unison, last_entry, last_outlay
     document.getElementById("item-name").textContent = "Articulo: " + item[0];
     document.getElementById("item-sku").textContent = "SKU: " + item[1];
-    document.getElementById("item-actual-stock").textContent = "Existencia actual: " + item[3] + " unidades";
+    document.getElementById("item-actual-stock").textContent = "Existencia actual: " + item[3] + " unidades.";
     let item_status
     let item_stock = item[3]
     if(item_stock == 0){
-      item_status = "Sin existencias, es necesario reabastecer."
+      item_status = "Sin existencias; es necesario reabastecer."
     }
     else{
       if(item_stock <= item[4]){
-        item_status = "Baja existencias, se recomienda reabastecer pronto."
+        item_status = "Baja existencias; se recomienda reabastecer pronto."
       }
       else{
-        item_status = "Suficientes existencias, no es necesario reabastecer."
+        item_status = "Suficientes existencias; no es necesario reabastecer."
       }
     }
-    document.getElementById("item-status").textContent = "Estado: " + item_status;
+    document.getElementById("item-status").textContent = "Estado: " + item_status + ".";
     document.getElementById("item-last-entry").textContent = "ID de la última entrada del articulo: " + item[6];
     document.getElementById("item-last-outlay").textContent = "ID de la última salida del articulo: " + item[7];
   }
