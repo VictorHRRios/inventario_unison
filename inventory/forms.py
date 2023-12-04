@@ -39,3 +39,8 @@ class ItemAddForm(forms.Form):
 class DateRangeForm(forms.Form):
     start_date = forms.DateField(label='Fecha inicio', widget=forms.DateInput(attrs={'type': 'date'}))
     end_date = forms.DateField(label='Fecha final', widget=forms.DateInput(attrs={'type': 'date'}))
+
+
+class SearchForm(forms.Form):
+    search_query = forms.CharField(max_length=255, required=False, label='Buscar por nombre')
+    sku_id = forms.CharField(max_length=50, required=False, label='Buscar por SKU')

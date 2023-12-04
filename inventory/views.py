@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Item, ShoppingCart, Report, Order, User
-from .forms import ItemCreateForm, DateRangeForm, ItemAddForm
+from .forms import ItemCreateForm, DateRangeForm, ItemAddForm, SearchForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 
@@ -12,6 +12,15 @@ import json
 def home(request):
     items = Item.objects.all()
     categories = items.values_list('category', flat=True).distinct()
+    form = SearchForm(request.GET)
+
+    if form.is_valid():
+        search_name = form.cleaned_data.get('search_query')
+        sku_id = form.cleaned_data.get('sku_id')
+        if search_name:
+            items = items.filter(name__icontains=search_name)
+        if sku_id:
+            items = items.filter(sku__exact=sku_id)
 
     selected_category = request.GET.get('category')
 
@@ -38,6 +47,7 @@ def home(request):
         'items': items,
         'categories': categories,
         'selected_category': selected_category,
+        'form': form,
     }
     return render(request, 'inventory/request_item.html', context)
 
@@ -92,16 +102,16 @@ def product_stats(request):
     items = []
     all_items = Item.objects.all()
     for item in all_items:
-        items.append([item.name, 
-                      float(item.sku), 
-                      item.category, 
-                      item.stock, 
-                      item.low_stock_threshold, 
+        items.append([item.name,
+                      float(item.sku),
+                      item.category,
+                      item.stock,
+                      item.low_stock_threshold,
                       item.unison])
     data = {
-        'items' : json.dumps(items),
+        'items': json.dumps(items),
     }
-    return render(request, 'stats/product_stats.html', {'title': 'Product Stats', 'data' : data})
+    return render(request, 'stats/product_stats.html', {'title': 'Product Stats', 'data': data})
 
 
 @staff_member_required
