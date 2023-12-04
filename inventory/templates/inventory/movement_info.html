@@ -17,9 +17,15 @@
             <tbody>
 
             {% for order in orders %}
+
+
                 <tr>
                     <th scope="row">
-                    <a href="{% url 'display_item' order.item.id %}">{{ order.item.name }}</a>
+                        {% if order.item is not None %}
+                            <a href="{% url 'display_item' order.item.id %}">{{ order.item.name }}</a>
+                        {% else %}
+                            <a>Artículo eliminado</a>
+                        {% endif %}
                     </th>
                     <td> {{ order.quantity }}</td>
                     <td> {{ order.price }}</td>
