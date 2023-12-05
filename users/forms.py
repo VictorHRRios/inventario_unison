@@ -59,5 +59,5 @@ class ProfileUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].label = 'Imágen'
-        self.fields['phone'].label = 'Numero de Celular'
+        self.fields['phone'].label = 'Número de Celular'
         self.fields['role'].label = 'Área de trabajo'

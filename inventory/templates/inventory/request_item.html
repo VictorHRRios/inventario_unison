@@ -139,12 +139,12 @@
             font-weight: bold;
         }
 
-        #div_id_search_query{
+        #div_id_search_query {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: large;
         }
 
-        #div_id_sku_id{
+        #div_id_sku_id {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: large;
         }
@@ -168,19 +168,27 @@
             </div>
         </div>
         <form method="get" action="{% url 'inventory-home' %}">
-            <div id="div_id_search_query" class="form-group">
-                <label for="id_search_query" class>Buscar por nombre</label>
-                <div>
-                    <input type="text" name="search_query" maxlength="255" class="textinput form-control" id="id_search_query">
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="div_id_search_query" class="form-group">
+                        <label for="id_search_query">Buscar por nombre</label>
+                        <div>
+                            <input type="text" name="search_query" maxlength="255" class="form-control textinput"
+                                   id="id_search_query">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div id="div_id_sku_id" class="form-group">
+                        <label for="id_sku_id">Buscar por SKU</label>
+                        <div>
+                            <input type="text" name="sku_id" maxlength="50" class="form-control textinput"
+                                   id="id_sku_id">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="div_id_sku_id" class="form-group">
-                <label for="id_sku_id" class>Buscar por SKU</label>
-                <div>
-                    <input type="text" name="sku_id" maxlength="50" class="textinput form-control" id="id_sku_id">
-                </div>
-            </div>
-            
+
             <button class="btn btn-secondary" type="submit" value="Search">Buscar</button>
             <br>
             <br>

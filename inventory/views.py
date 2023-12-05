@@ -108,7 +108,7 @@ def budget_stats(request):
 @staff_member_required
 def product_stats(request):
     items = []
-    all_items = Item.objects.all()
+    all_items = Item.objects.all().order_by('name')
     for item in all_items:
         # Obtencion de las oredenes
         data_entrys_item = []
@@ -160,7 +160,7 @@ def shopping_cart(request):
         if cart_item.quantity > cart_item.item.stock:
             cart_item.quantity = cart_item.item.stock
             cart_item.save()
-            messages.warning(request, f'El stock del carrito ha sido modificado.')
+            messages.warning(request, f'La cantidad de artículos del carrito ha sido modificada por cambios en el stock.')
         elif cart_item.quantity == 0:
             cart_item.delete()
             messages.warning(request, f'Un elemento del carrito ha sido eliminado por cambios en el stock.')
@@ -311,6 +311,16 @@ def add_stock(request):
 
     categories = items.values_list('category', flat=True).distinct()
 
+    search_form = SearchForm(request.GET)
+
+    if search_form.is_valid():
+        search_name = search_form.cleaned_data.get('search_query')
+        sku_id = search_form.cleaned_data.get('sku_id')
+        if search_name:
+            items = items.filter(name__icontains=search_name)
+        if sku_id:
+            items = items.filter(sku__exact=sku_id)
+
     form = ItemAddForm()
 
     selected_category = request.GET.get('category')
@@ -343,7 +353,8 @@ def add_stock(request):
         'cart_items': cart_items,
         'categories': categories,
         'selected_category': selected_category,
-        'form': form
+        'form': form,
+        'search_form': search_form
     }
     return render(request, 'inventory/add_stock.html', context)
 
